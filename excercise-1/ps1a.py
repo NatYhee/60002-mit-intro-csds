@@ -12,7 +12,7 @@ import time
 #================================
 
 # Problem 1
-def load_cows(filename):
+def load_cows(filename:str) -> dict:
     """
     Read the contents of the given file.  Assumes the file contents contain
     data in the form of comma-separated cow name, weight pairs, and return a
@@ -24,8 +24,18 @@ def load_cows(filename):
     Returns:
     a dictionary of cow name (string), weight (int) pairs
     """
-    # TODO: Your code here
-    pass
+    dict_of_cow = {}
+
+    with open(filename, 'r') as open_file:
+        content = open_file.read()
+    
+    ls_line = content.split('\n')
+
+    for line in ls_line:
+        ls_context = line.split(',')
+        dict_of_cow[ls_context[0]] =  ls_context[1]
+
+    return dict_of_cow
 
 # Problem 2
 def greedy_cow_transport(cows,limit=10):
