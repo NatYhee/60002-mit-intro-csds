@@ -3,10 +3,11 @@
 # Name:
 # Collaborators:
 # Time:
+import copy
 
 from ps1_partition import get_partitions
+from utils import greedy_gen_trasport_trip, delete_transported_cows
 import time
-import copy
 
 #================================
 # Part A: Transporting Space Cows
@@ -67,21 +68,11 @@ def greedy_cow_transport(cows:dict, limit:int=10):
     ls_all_trip = []
 
     while len(sorted_dict_transport_cow.keys()) > 0:
-        limit_weight = limit
-        total_weight = 0
-        trip = []
 
-        for cow in sorted_dict_transport_cow.keys():
-            if total_weight + sorted_dict_transport_cow[cow] <= limit_weight:
-                trip.append(cow)
-                total_weight += sorted_dict_transport_cow[cow]
-            else:
-                break
-
+        trip = greedy_gen_trasport_trip(sorted_dict_cow=sorted_dict_transport_cow, limit_weight=limit)
         ls_all_trip.append(trip)
 
-        for cow in trip:
-            del sorted_dict_transport_cow[cow]
+        delete_transported_cows(sorted_dict_cow=sorted_dict_transport_cow, transported_cows=trip)
 
     return ls_all_trip
 
