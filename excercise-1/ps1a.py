@@ -74,6 +74,8 @@ def greedy_cow_transport(cows:dict, limit:int=10) -> list:
 
         delete_transported_cows(sorted_dict_cow=sorted_dict_transport_cow, transported_cows=trip)
 
+    print(f"Greedy: minimum number of trip from greedy is {str(len(ls_all_trip))}")
+
     return ls_all_trip
 
 # Problem 3
@@ -98,7 +100,7 @@ def brute_force_cow_transport(cows:dict, limit:int=10) -> list:
     transported on a particular trip and the overall list containing all the
     trips
     """
-    #Using get_partitions module will provide all pas
+    #Using get_partitions module will provide all passible trip
     all_possible_combination_trip = get_partitions(cows)
     dict_trip_cost_detail = {}
 
@@ -110,7 +112,7 @@ def brute_force_cow_transport(cows:dict, limit:int=10) -> list:
     #Finding mininum cost of trip (least number of trip)
     min_trip_cost = min(list(dict_trip_cost_detail.keys()))
     ls_trip_detail_least_cost = dict_trip_cost_detail[min_trip_cost]
-    print(f"minimum number of trip from brute force is {str(min_trip_cost)}")
+    print(f"Brute Force: minimum number of trip from brute force is {str(min_trip_cost)}")
 
     return ls_trip_detail_least_cost
 
@@ -129,11 +131,21 @@ def compare_cow_transport_algorithms():
     Returns:
     Does not return anything.
     """
-    # TODO: Your code here
-    pass
+    dict_cows_info = load_cows('ps1_cow_data.txt')
+    
+    greedy_start = time.time()
+    greedy_result = greedy_cow_transport(cows=dict_cows_info)
+    greedy_end = time.time()
+    greedy_execution_time = greedy_end - greedy_start
+    print(f"greedy take time {str(greedy_execution_time)}")
+    print(greedy_result)
 
-if __name__ == '__main__':
-    # dict_cow = load_cows('ps1_cow_data.txt')
-    dict_cow = {'Jesse': 6, 'Maybel': 3, 'Callie': 2, 'Maggie': 5}
-    test = brute_force_cow_transport(cows=dict_cow)
-    print(test)
+    bruteforce_start = time.time()
+    bruteforce_result = brute_force_cow_transport(cows=dict_cows_info)
+    bruteforce_end = time.time()
+    bruteforce_execution_time = bruteforce_end - bruteforce_start
+    print(f"greedy take time {str(bruteforce_execution_time)}")
+    print(bruteforce_result)
+
+if __name__ == "__main__":
+    compare_cow_transport_algorithms()
