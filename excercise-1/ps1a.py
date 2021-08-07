@@ -6,6 +6,7 @@
 
 from ps1_partition import get_partitions
 import time
+import copy
 
 #================================
 # Part A: Transporting Space Cows
@@ -33,12 +34,12 @@ def load_cows(filename:str) -> dict:
 
     for line in ls_line:
         ls_context = line.split(',')
-        dict_of_cow[ls_context[0]] =  ls_context[1]
+        dict_of_cow[ls_context[0]] =  int(ls_context[1])
 
     return dict_of_cow
 
 # Problem 2
-def greedy_cow_transport(cows,limit=10):
+def greedy_cow_transport(cows:dict, limit:int=10):
     """
     Uses a greedy heuristic to determine an allocation of cows that attempts to
     minimize the number of spaceship trips needed to transport all the cows. The
@@ -60,8 +61,29 @@ def greedy_cow_transport(cows,limit=10):
     transported on a particular trip and the overall list containing all the
     trips
     """
-    # TODO: Your code here
-    pass
+    dict_transport_cow = copy.deepcopy(cows)
+    sorted_dict_transport_cow = dict(sorted(dict_transport_cow.items(), key=lambda item_cow: item_cow[1], reverse=True))
+
+    ls_all_trip = []
+
+    while len(sorted_dict_transport_cow.keys()) > 0:
+        limit_weight = limit
+        total_weight = 0
+        trip = []
+
+        for cow in sorted_dict_transport_cow.keys():
+            if total_weight + sorted_dict_transport_cow[cow] <= limit_weight:
+                trip.append(cow)
+                total_weight += sorted_dict_transport_cow[cow]
+            else:
+                break
+
+        ls_all_trip.append(trip)
+
+        for cow in trip:
+            del sorted_dict_transport_cow[cow]
+
+    return ls_all_trip
 
 # Problem 3
 def brute_force_cow_transport(cows,limit=10):
@@ -104,3 +126,9 @@ def compare_cow_transport_algorithms():
     """
     # TODO: Your code here
     pass
+
+if __name__ == '__main__':
+    dict_cow = load_cows('ps1_cow_data.txt')
+    print(dict_cow)
+    result = greedy_cow_transport(dict_cow)
+    print(result)
