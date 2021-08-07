@@ -4,10 +4,10 @@
 # Collaborators:
 # Time:
 import copy
+import time
 
 from ps1_partition import get_partitions
-from utils import greedy_gen_trasport_trip, delete_transported_cows
-import time
+from utils import greedy_gen_trasport_trip, delete_transported_cows, is_trip_feasible, record_dict_trip_with_cost
 
 #================================
 # Part A: Transporting Space Cows
@@ -40,7 +40,7 @@ def load_cows(filename:str) -> dict:
     return dict_of_cow
 
 # Problem 2
-def greedy_cow_transport(cows:dict, limit:int=10):
+def greedy_cow_transport(cows:dict, limit:int=10) -> list:
     """
     Uses a greedy heuristic to determine an allocation of cows that attempts to
     minimize the number of spaceship trips needed to transport all the cows. The
@@ -77,7 +77,7 @@ def greedy_cow_transport(cows:dict, limit:int=10):
     return ls_all_trip
 
 # Problem 3
-def brute_force_cow_transport(cows,limit=10):
+def brute_force_cow_transport(cows:dict, limit:int=10) -> list:
     """
     Finds the allocation of cows that minimizes the number of spaceship trips
     via brute force.  The brute force algorithm should follow the following method:
@@ -98,9 +98,23 @@ def brute_force_cow_transport(cows,limit=10):
     transported on a particular trip and the overall list containing all the
     trips
     """
-    # TODO: Your code here
-    pass
-        
+    #Using get_partitions module will provide all pas
+    all_possible_combination_trip = get_partitions(cows)
+    dict_trip_cost_detail = {}
+
+    #Create dictionary of number of trip and trip detail combination
+    for possible_combination_trip in all_possible_combination_trip:
+        if is_trip_feasible(possible_combination_trip=possible_combination_trip, cows=cows, weight_limit=limit):
+            record_dict_trip_with_cost(possible_combination_trip=possible_combination_trip, dict_trip_cost_detail=dict_trip_cost_detail)
+
+    #Finding mininum cost of trip (least number of trip)
+    min_trip_cost = min(list(dict_trip_cost_detail.keys()))
+    ls_trip_detail_least_cost = dict_trip_cost_detail[min_trip_cost]
+    print(f"minimum number of trip from brute force is {str(min_trip_cost)}")
+
+    return ls_trip_detail_least_cost
+
+            
 # Problem 4
 def compare_cow_transport_algorithms():
     """
@@ -119,7 +133,7 @@ def compare_cow_transport_algorithms():
     pass
 
 if __name__ == '__main__':
-    dict_cow = load_cows('ps1_cow_data.txt')
-    print(dict_cow)
-    result = greedy_cow_transport(dict_cow)
-    print(result)
+    # dict_cow = load_cows('ps1_cow_data.txt')
+    dict_cow = {'Jesse': 6, 'Maybel': 3, 'Callie': 2, 'Maggie': 5}
+    test = brute_force_cow_transport(cows=dict_cow)
+    print(test)
