@@ -1,3 +1,5 @@
+import math
+
 
 def greedy_gen_trasport_trip(sorted_dict_cow:dict, limit_weight:int) -> list:
     """
@@ -83,3 +85,26 @@ def record_dict_trip_with_cost(possible_combination_trip:list, dict_trip_cost_de
         dict_trip_cost_detail[trip_cost].append(possible_combination_trip)
     
     return dict_trip_cost_detail
+
+
+def get_available_egg_for_knapsack(egg_weights: tuple, target_weight:int) -> list:
+    """
+    Create list that contains with all possible optiona that can be select to store in knapsack
+
+    Parameters:
+    - egg_weights (tuple): tuple contain type of egg weight (with assumption of unlimit amount per 'weights')
+    - target_weight (int): total weight of egg that can be carry per transportation
+
+    Returns:
+    - ls_egg_for_knapsack (list): list of available egg to put in knapsack. Its weight value represent an identity of individual egg
+    """
+
+    ls_egg_for_knapsack = []
+
+    for weight in egg_weights:
+
+        max_possible_amount = int(math.floor(target_weight/weight))
+        egg_for_knapsack = [weight for _ in range(max_possible_amount)]
+        ls_egg_for_knapsack.extend(egg_for_knapsack)
+        
+    return ls_egg_for_knapsack
