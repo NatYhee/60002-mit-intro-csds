@@ -8,9 +8,11 @@
 #================================
 # Part B: Golden Eggs
 #================================
+from typing import Tuple
+from utils import get_available_egg_for_knapsack, put_item_in_knapsack
 
 # Problem 1
-def dp_make_weight(egg_weights, target_weight, memo = {}):
+def dp_make_weight(egg_weights:tuple, target_weight:int, memo:dict = {}):
     """
     Find number of eggs to bring back, using the smallest number of eggs. Assumes there is
     an infinite supply of eggs of each weight, and there is always a egg of value 1.
@@ -22,15 +24,21 @@ def dp_make_weight(egg_weights, target_weight, memo = {}):
     
     Returns: int, smallest number of eggs needed to make target weight
     """
-    # TODO: Your code here
-    pass
+    ls_egg_for_knapsack = get_available_egg_for_knapsack(egg_weights=egg_weights, target_weight=target_weight)
+    num_eggs, selectedEggs = put_item_in_knapsack(ls_for_knapsack=ls_egg_for_knapsack, target_weight=target_weight, memo=memo)
+    print(num_eggs)
+    print(selectedEggs)
+    num_eggs = len(selectedEggs)
+    return num_eggs
 
 # EXAMPLE TESTING CODE, feel free to add more if you'd like
 if __name__ == '__main__':
-    egg_weights = (1, 5, 10, 25)
-    n = 99
-    print("Egg weights = (1, 5, 10, 25)")
-    print("n = 99")
-    print("Expected ouput: 9 (3 * 25 + 2 * 10 + 4 * 1 = 99)")
-    print("Actual output:", dp_make_weight(egg_weights, n))
-    print()
+    egg_weights = (5, 10, 25)
+    n = 30
+    # print("Egg weights = (1, 5, 10, 25)")
+    # print("n = 99")
+    # print("Expected ouput: 9 (3 * 25 + 2 * 10 + 4 * 1 = 99)")
+    # print("Actual output:", dp_make_weight(egg_weights, n))
+    # print()
+
+    print(dp_make_weight(egg_weights=egg_weights, target_weight=n))
