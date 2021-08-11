@@ -98,7 +98,6 @@ def get_available_egg_for_knapsack(egg_weights: tuple, target_weight:int) -> lis
     Returns:
     - ls_egg_for_knapsack (list): list of available egg to put in knapsack. Its weight value represent an identity of individual egg
     """
-
     ls_egg_for_knapsack = []
 
     for weight in egg_weights:
@@ -106,5 +105,27 @@ def get_available_egg_for_knapsack(egg_weights: tuple, target_weight:int) -> lis
         max_possible_amount = int(math.floor(target_weight/weight))
         egg_for_knapsack = [weight for _ in range(max_possible_amount)]
         ls_egg_for_knapsack.extend(egg_for_knapsack)
-        
+
     return ls_egg_for_knapsack
+
+
+def put_item_in_knapsack(ls_for_knapsack:list, target_weight:int, memo:dict):
+    
+    available_weight = target_weight
+
+    if ls_for_knapsack == [] or available_weight == 0:
+        return (0, ())
+    elif ls_for_knapsack[0] > available_weight:
+        return put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=available_weight, memo=memo)
+    else:
+        consideredItemWieght = ls_for_knapsack[0]
+        withWeight, withToTake = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=available_weight - consideredItemWieght, memo=memo)
+        withWeight += consideredItemWieght
+        withoutWeight, withoutToTake = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=available_weight, memo=memo)
+
+        if withWeight > withoutWeight:
+            result = (withWeight, withToTake + (consideredItemWieght,))
+        else :
+            result = (withoutWeight, withoutToTake)
+
+    return result
