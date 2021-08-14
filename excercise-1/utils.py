@@ -113,10 +113,11 @@ def put_item_in_knapsack(ls_for_knapsack:list, target_weight:int, memo:dict, num
 
     quotaWeight = target_weight
     print(f"init quotaWeight: {quotaWeight}")
+    print(f"init numEggBasket: {numEggBasket}")
 
     if (len(ls_for_knapsack), target_weight) in memo:
         result = memo[(len(ls_for_knapsack), target_weight)]
-        
+
     elif quotaWeight == 0 or ls_for_knapsack == []:
         result = (numEggBasket, quotaWeight)
     
@@ -163,6 +164,7 @@ def put_item_in_knapsack(ls_for_knapsack:list, target_weight:int, memo:dict, num
             print('otherwise')
             result = (withoutNumPickEgg, withoutQuotaWeight)
     
-    memo[(len(ls_for_knapsack), quotaWeight)] = result
+    print(f"memo (len ls_for_knapsack:{len(ls_for_knapsack)} from {ls_for_knapsack}, quotaWeight: {quotaWeight})")
+    # memo[(len(ls_for_knapsack), quotaWeight)] = result
 
     return result
