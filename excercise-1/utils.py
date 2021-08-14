@@ -112,6 +112,7 @@ def get_available_egg_for_knapsack(egg_weights: tuple, target_weight:int) -> lis
 def put_item_in_knapsack(ls_for_knapsack:list, target_weight:int, memo:dict, numEggBasket:int=0):
 
     quotaWeight = target_weight
+    print(f"init quotaWeight: {quotaWeight}")
 
     if quotaWeight == 0 or ls_for_knapsack == []:
         result = (numEggBasket, quotaWeight)
