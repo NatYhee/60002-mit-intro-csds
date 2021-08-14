@@ -133,9 +133,12 @@ def put_item_in_knapsack(ls_for_knapsack:list, target_weight:int, memo:dict, num
         print(f"quotaWeight: {quotaWeight}")
 
         print("#######################################################################################")
-        if withNumPickEggs < withoutNumPickEgg and withQuotaWeight == 0 and withoutQuotaWeight == 0:
-            print(f"withNumPickEggs: {withNumPickEggs} < withoutNumPickEgg: {withoutNumPickEgg} and withQuotaWeight : {withQuotaWeight} : withoutQuotaWeight : {withoutQuotaWeight}")
+        if withNumPickEggs <= withoutNumPickEgg and withQuotaWeight == 0 and withoutQuotaWeight == 0:
+            print(f"withNumPickEggs: {withNumPickEggs} <= withoutNumPickEgg: {withoutNumPickEgg} and withQuotaWeight : {withQuotaWeight} : withoutQuotaWeight : {withoutQuotaWeight}")
             result = (withNumPickEggs, withQuotaWeight)
+        elif withNumPickEggs > withoutNumPickEgg and withQuotaWeight == 0 and withoutQuotaWeight == 0:
+            print(f"withNumPickEggs: {withNumPickEggs} > withoutNumPickEgg: {withoutNumPickEgg} and withQuotaWeight : {withQuotaWeight} : withoutQuotaWeight : {withoutQuotaWeight}")
+            result = (withoutNumPickEgg, withoutQuotaWeight)
         elif withQuotaWeight == 0 and withoutQuotaWeight > 0:
             print(f"withQuotaWeight: {withQuotaWeight} and withoutQuotaWeight: {withoutQuotaWeight}")
             result = (withNumPickEggs, withQuotaWeight)
