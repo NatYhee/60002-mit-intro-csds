@@ -28,12 +28,11 @@ def dp_make_weight(egg_weights:tuple, target_weight:int, memo:dict = {}):
     num_eggs, selectedEggs = put_item_in_knapsack(ls_for_knapsack=ls_egg_for_knapsack, target_weight=target_weight, memo=memo)
     print(num_eggs)
     print(selectedEggs)
-    num_eggs = len(selectedEggs)
     return num_eggs
 
 # EXAMPLE TESTING CODE, feel free to add more if you'd like
 if __name__ == '__main__':
-    egg_weights = (5, 10, 25)
+    egg_weights = ( 5, 10, 25)
     n = 30
     # print("Egg weights = (1, 5, 10, 25)")
     # print("n = 99")

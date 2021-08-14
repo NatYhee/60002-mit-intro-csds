@@ -109,23 +109,47 @@ def get_available_egg_for_knapsack(egg_weights: tuple, target_weight:int) -> lis
     return ls_egg_for_knapsack
 
 
-def put_item_in_knapsack(ls_for_knapsack:list, target_weight:int, memo:dict):
+def put_item_in_knapsack(ls_for_knapsack:list, target_weight:int, memo:dict, numEggBasket:int=0):
+
+    quotaWeight = target_weight
+
+    if quotaWeight == 0 or ls_for_knapsack == []:
+        result = (numEggBasket, quotaWeight)
     
-    available_weight = target_weight
+    elif ls_for_knapsack[0] > quotaWeight:
+        result = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=quotaWeight, memo=memo, numEggBasket=numEggBasket)
 
-    if ls_for_knapsack == [] or available_weight == 0:
-        return (0, ())
-    elif ls_for_knapsack[0] > available_weight:
-        return put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=available_weight, memo=memo)
     else:
-        consideredItemWieght = ls_for_knapsack[0]
-        withWeight, withToTake = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=available_weight - consideredItemWieght, memo=memo)
-        withWeight += consideredItemWieght
-        withoutWeight, withoutToTake = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=available_weight, memo=memo)
+        consideredEggWieght = ls_for_knapsack[0]
+        numPickEggs = numEggBasket
+        withNumPickEggs, withQuotaWeight = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=quotaWeight-consideredEggWieght, memo=memo, numEggBasket=numPickEggs+1)
+        print(f"withNumPickEggs: {withNumPickEggs}")
+        print(f"withQuotaWeight: {withQuotaWeight}")
+        print(f"quotaWeight: {quotaWeight}")
 
-        if withWeight > withoutWeight:
-            result = (withWeight, withToTake + (consideredItemWieght,))
-        else :
-            result = (withoutWeight, withoutToTake)
+        withoutNumPickEgg, withoutQuotaWeight = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=quotaWeight, memo=memo, numEggBasket=numPickEggs)
+        print(f"withoutNumPickEgg: {withoutNumPickEgg}")
+        print(f"withoutQuotaWeight: {withoutQuotaWeight}")
+        print(f"quotaWeight: {quotaWeight}")
+
+        print("#######################################################################################")
+        if withNumPickEggs < withoutNumPickEgg and withQuotaWeight == 0 and withoutQuotaWeight == 0:
+            print(f"withNumPickEggs: {withNumPickEggs} < withoutNumPickEgg: {withoutNumPickEgg} and withQuotaWeight : {withQuotaWeight} : withoutQuotaWeight : {withoutQuotaWeight}")
+            result = (withNumPickEggs, withQuotaWeight)
+        elif withQuotaWeight == 0 and withoutQuotaWeight > 0:
+            print(f"withQuotaWeight: {withQuotaWeight} and withoutQuotaWeight: {withoutQuotaWeight}")
+            result = (withNumPickEggs, withQuotaWeight)
+        elif withQuotaWeight > 0 and withoutQuotaWeight == 0:
+            print(f"withQuotaWeight: {withQuotaWeight} and withoutQuotaWeight: {withoutQuotaWeight}")
+            result = (withoutNumPickEgg, withoutQuotaWeight)
+        elif withQuotaWeight > 0 and withoutQuotaWeight > 0:
+            print(f"withQuotaWeight: {withQuotaWeight} and withoutQuotaWeight: {withoutQuotaWeight}")
+            if withQuotaWeight <= withoutQuotaWeight:
+                result = (withNumPickEggs, withQuotaWeight)
+            elif withQuotaWeight > withoutQuotaWeight:
+                result = (withoutNumPickEgg, withoutQuotaWeight)
+        else:
+            print('otherwise')
+            result = (withoutNumPickEgg, withoutQuotaWeight)
 
     return result
