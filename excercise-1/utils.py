@@ -117,16 +117,20 @@ def put_item_in_knapsack(ls_for_knapsack:list, target_weight:int, memo:dict, num
         result = (numEggBasket, quotaWeight)
     
     elif ls_for_knapsack[0] > quotaWeight:
+        print(f"EggWieght that exceed quota: {ls_for_knapsack[0]}")
         result = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=quotaWeight, memo=memo, numEggBasket=numEggBasket)
 
     else:
         consideredEggWieght = ls_for_knapsack[0]
+        print(f"consideredEggWieght: {consideredEggWieght}")
         numPickEggs = numEggBasket
+        print(f"with case ls knapsack: {ls_for_knapsack[1:]}")
         withNumPickEggs, withQuotaWeight = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=quotaWeight-consideredEggWieght, memo=memo, numEggBasket=numPickEggs+1)
         print(f"withNumPickEggs: {withNumPickEggs}")
         print(f"withQuotaWeight: {withQuotaWeight}")
         print(f"quotaWeight: {quotaWeight}")
 
+        print(f"without case ls knapsack: {ls_for_knapsack[1:]}")
         withoutNumPickEgg, withoutQuotaWeight = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=quotaWeight, memo=memo, numEggBasket=numPickEggs)
         print(f"withoutNumPickEgg: {withoutNumPickEgg}")
         print(f"withoutQuotaWeight: {withoutQuotaWeight}")
