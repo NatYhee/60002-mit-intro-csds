@@ -1,4 +1,5 @@
 import math
+from typing import Tuple 
 
 
 def greedy_gen_trasport_trip(sorted_dict_cow:dict, limit_weight:int) -> list:
@@ -96,7 +97,7 @@ def get_available_egg_for_knapsack(egg_weights: tuple, target_weight:int) -> lis
     - target_weight (int): total weight of egg that can be carry per transportation
 
     Returns:
-    - ls_egg_for_knapsack (list): list of available egg to put in knapsack. Its weight value represent an identity of individual egg
+    - ls_egg_for_knapsack (list): list of available egg to put in knapsack sorted in descending order by weight. Its weight value represent an identity of individual egg
     """
     ls_egg_for_knapsack = []
 
@@ -106,65 +107,44 @@ def get_available_egg_for_knapsack(egg_weights: tuple, target_weight:int) -> lis
         egg_for_knapsack = [weight for _ in range(max_possible_amount)]
         ls_egg_for_knapsack.extend(egg_for_knapsack)
 
+    ls_egg_for_knapsack.sort(reverse=True)
+
     return ls_egg_for_knapsack
 
 
-def put_item_in_knapsack(ls_for_knapsack:list, target_weight:int, memo:dict, numEggBasket:int=0):
+def put_item_in_knapsack(ls_for_knapsack:list, target_weight:int, memo:dict) -> tuple:
+    """
+    Select egg from list of egg to knapsack by finding combination that picking smallest number of eggs while having least leftover of quota weight
 
+    Parameters:
+    - ls_for_knapsack (list): list of available egg to put in knapsack sorted in descending order by weight. Its weight value represent an identity of individual egg
+    - target_weight (int): total weight of egg that can be carry per transportation
+    - memo (dict): dictionary for memorizing calculation to apply dynamic programming
+
+    Returns:
+    - tuple with two following elements
+        - numEggBasket (int): the least amount of eggs that fullfill the objective of this knapsack Problem
+        - selectedEggs (tuple): tuple variable that contains selected egg in the basket
+    """
     quotaWeight = target_weight
-    print(f"init quotaWeight: {quotaWeight}")
-    print(f"init numEggBasket: {numEggBasket}")
 
-    if (len(ls_for_knapsack), target_weight) in memo:
-        result = memo[(len(ls_for_knapsack), target_weight)]
-
-    elif quotaWeight == 0 or ls_for_knapsack == []:
-        result = (numEggBasket, quotaWeight)
-    
+    if quotaWeight == 0 or ls_for_knapsack == []:
+        print("endding")
+        result = (0, ())
     elif ls_for_knapsack[0] > quotaWeight:
-        print(f"EggWieght that exceed quota: {ls_for_knapsack[0]}")
-        result = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=quotaWeight, memo=memo, numEggBasket=numEggBasket)
-
+        print("skip item")
+        result = put_item_in_knapsack(ls_for_knapsack= ls_for_knapsack[1:], target_weight=quotaWeight, memo=memo)
     else:
-        consideredEggWieght = ls_for_knapsack[0]
-        print(f"consideredEggWieght: {consideredEggWieght}")
-        numPickEggs = numEggBasket
-        print(f"with case ls knapsack: {ls_for_knapsack[1:]}")
-        withNumPickEggs, withQuotaWeight = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=quotaWeight-consideredEggWieght, memo=memo, numEggBasket=numPickEggs+1)
-        print(f"withNumPickEggs: {withNumPickEggs}")
-        print(f"withQuotaWeight: {withQuotaWeight}")
+        consideredEggWeight = ls_for_knapsack[0]
+        print(f"consideredEggWeight: {consideredEggWeight}")
         print(f"quotaWeight: {quotaWeight}")
 
-        print(f"without case ls knapsack: {ls_for_knapsack[1:]}")
-        withoutNumPickEgg, withoutQuotaWeight = put_item_in_knapsack(ls_for_knapsack=ls_for_knapsack[1:], target_weight=quotaWeight, memo=memo, numEggBasket=numPickEggs)
-        print(f"withoutNumPickEgg: {withoutNumPickEgg}")
-        print(f"withoutQuotaWeight: {withoutQuotaWeight}")
-        print(f"quotaWeight: {quotaWeight}")
+        numEggBasket, selectedEggs = put_item_in_knapsack(ls_for_knapsack= ls_for_knapsack[1:], target_weight=quotaWeight-consideredEggWeight, memo=memo)
 
-        print("#######################################################################################")
-        if withNumPickEggs <= withoutNumPickEgg and withQuotaWeight == 0 and withoutQuotaWeight == 0:
-            print(f"withNumPickEggs: {withNumPickEggs} <= withoutNumPickEgg: {withoutNumPickEgg} and withQuotaWeight : {withQuotaWeight} : withoutQuotaWeight : {withoutQuotaWeight}")
-            result = (withNumPickEggs, withQuotaWeight)
-        elif withNumPickEggs > withoutNumPickEgg and withQuotaWeight == 0 and withoutQuotaWeight == 0:
-            print(f"withNumPickEggs: {withNumPickEggs} > withoutNumPickEgg: {withoutNumPickEgg} and withQuotaWeight : {withQuotaWeight} : withoutQuotaWeight : {withoutQuotaWeight}")
-            result = (withoutNumPickEgg, withoutQuotaWeight)
-        elif withQuotaWeight == 0 and withoutQuotaWeight > 0:
-            print(f"withQuotaWeight: {withQuotaWeight} and withoutQuotaWeight: {withoutQuotaWeight}")
-            result = (withNumPickEggs, withQuotaWeight)
-        elif withQuotaWeight > 0 and withoutQuotaWeight == 0:
-            print(f"withQuotaWeight: {withQuotaWeight} and withoutQuotaWeight: {withoutQuotaWeight}")
-            result = (withoutNumPickEgg, withoutQuotaWeight)
-        elif withQuotaWeight > 0 and withoutQuotaWeight > 0:
-            print(f"withQuotaWeight: {withQuotaWeight} and withoutQuotaWeight: {withoutQuotaWeight}")
-            if withQuotaWeight <= withoutQuotaWeight:
-                result = (withNumPickEggs, withQuotaWeight)
-            elif withQuotaWeight > withoutQuotaWeight:
-                result = (withoutNumPickEgg, withoutQuotaWeight)
-        else:
-            print('otherwise')
-            result = (withoutNumPickEgg, withoutQuotaWeight)
-    
-    print(f"memo (len ls_for_knapsack:{len(ls_for_knapsack)} from {ls_for_knapsack}, quotaWeight: {quotaWeight})")
-    # memo[(len(ls_for_knapsack), quotaWeight)] = result
+        numEggBasket += 1
+        selectedEggs = selectedEggs + (consideredEggWeight,)
+        result = (numEggBasket, selectedEggs)
+        print(f"numEggBasket: {numEggBasket}")
+        print(f"selectedEggs: {selectedEggs}")
 
     return result
