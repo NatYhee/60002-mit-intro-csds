@@ -108,7 +108,7 @@ class Digraph(object):
         if src not in self.nodes or dest not in self.nodes:
             raise ValueError
         else:
-            self.edges[src].append(dest)
+            self.edges[src].append(edge)
 
 
 # ================================================================
