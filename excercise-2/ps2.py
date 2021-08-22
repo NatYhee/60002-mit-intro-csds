@@ -9,6 +9,7 @@
 #
 import unittest
 from graph import Digraph, Node, WeightedEdge
+from utils import textfile_to_list
 
 #
 # Problem 2: Building up the Campus Map
@@ -42,9 +43,37 @@ def load_map(map_filename):
     Returns:
         a Digraph representing the map
     """
+    digraph = Digraph()
 
-    # TODO
+    ls_line = textfile_to_list(map_filename)
+
+    for line in ls_line:
+
+        if line == '':
+            pass
+
+        key_info = ['source', 'destination', 'totalEdge', 'outdoor']
+        value_info = line.split(' ')
+        dict_graph = dict(zip(key_info, value_info))
+
+        src_node = Node(name=dict_graph['source'])
+        dest_node = Node(name=dict_graph['destination'])
+
+        if not digraph.has_node(src_node):
+            digraph.add_node(src_node)
+        if not digraph.has_node(dest_node):
+            digraph.add_node(dest_node)
+
+        digraph.add_edge(
+            WeightedEdge(src=src_node,\
+                dest=dest_node,\
+                total_distance=int(dict_graph['totalEdge']),\
+                outdoor_distance=int(dict_graph['outdoor']))\
+            )
+    
     print("Loading map from file...")
+    
+    return digraph
 
 # Problem 2c: Testing load_map
 # Include the lines used to test load_map below, but comment them out
