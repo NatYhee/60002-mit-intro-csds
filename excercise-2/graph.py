@@ -55,8 +55,7 @@ class Edge(object):
 
 class WeightedEdge(Edge):
     def __init__(self, src, dest, total_distance, outdoor_distance):
-        self.src = src
-        self.dest = dest
+        Edge.__init__(self, src, dest)
         self.total_distance = total_distance
         self.outdoor_distance = outdoor_distance
 
