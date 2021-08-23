@@ -72,7 +72,9 @@ class WeightedEdge(Edge):
 class Digraph(object):
     """Represents a directed graph of Node and Edge objects"""
     def __init__(self):
+        #set of object of node
         self.nodes = set([])
+        #dictionary with 'key' as 'object of source node' and 'value' as 'list of object WeightedEdge'
         self.edges = {}  # must be a dict of Node -> list of edges
 
     def __str__(self):
