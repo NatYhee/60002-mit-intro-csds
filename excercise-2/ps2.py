@@ -90,8 +90,8 @@ def load_map(map_filename):
 #
 
 # Problem 3b: Implement get_best_path
-def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
-                  best_path):
+def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_outdoors:int, best_dist:int,
+                  best_path:list):
     """
     Finds the shortest path between buildings subject to constraints.
 
@@ -124,12 +124,29 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
         If there exists no path that satisfies max_total_dist and
         max_dist_outdoors constraints, then return None.
     """
-    # TODO
-    pass
+    path = path + [start]
+
+    if not digraph.has_node(start) or not digraph.has_node(end):
+        raise ValueError('Verify Node start and end')
+    elif start == end:
+        #When arriving destination node
+        return path
+    else:
+        for nodeEdge in digraph.edges[start]:
+            if nodeEdge not in path:
+                if nodeEdge.get_total_distance() < best_dist and nodeEdge.get_outdoor_distance() < max_dist_outdoors:
+                    newPath = get_best_path(digraph=digraph,\
+                                                start=start,\
+                                                end=end,\
+                                                path=path,\
+                                                max_dist_outdoors=max_dist_outdoors-nodeEdge.get_outdoor_distance(),\
+                                                best_dist=best_dist-nodeEdge.get_total_distance(),\
+                                                best_path=None\
+                                            )
 
 
 # Problem 3c: Implement directed_dfs
-def directed_dfs(digraph, start, end, max_total_dist, max_dist_outdoors):
+def directed_dfs(digraph:object, start:str, end:str, max_total_dist:int, max_dist_outdoors:int):
     """
     Finds the shortest path from start to end using a directed depth-first
     search. The total distance traveled on the path must not
@@ -157,8 +174,14 @@ def directed_dfs(digraph, start, end, max_total_dist, max_dist_outdoors):
         If there exists no path that satisfies max_total_dist and
         max_dist_outdoors constraints, then raises a ValueError.
     """
-    # TODO
-    pass
+    start_node = Node(start)
+    end_node = Node(end)
+    best_path = get_best_path(digraph=digraph, start=start_node, end=end_node, path=[],\
+                            max_dist_outdoors=max_dist_outdoors, best_dist=max_total_dist, best_path=None)
+
+
+
+
 
 
 # ================================================================
@@ -246,4 +269,11 @@ class Ps2Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    # unittest.main()
+
+    # graph = load_map('mit_map.txt')
+    # print(graph)
+
+    edge = WeightedEdge(Node('a'), Node('b'), 15, 10)
+    print(edge)
+    print(str(edge))
