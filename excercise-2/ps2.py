@@ -124,25 +124,34 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
         If there exists no path that satisfies max_total_dist and
         max_dist_outdoors constraints, then return None.
     """
-    path = path + [start]
+    path[0].append(start)
 
     if not digraph.has_node(start) or not digraph.has_node(end):
         raise ValueError('Verify Node start and end')
     elif start == end:
         #When arriving destination node
-        return path
+        best_path = path[0]
+        best_dist = path[1]
+        return (best_path, best_dist)
     else:
-        for nodeEdge in digraph.edges[start]:
+        for nodeEdge in digraph.get_edges_for_node(start):
             if nodeEdge not in path:
-                if nodeEdge.get_total_distance() < best_dist and nodeEdge.get_outdoor_distance() < max_dist_outdoors:
-                    newPath = get_best_path(digraph=digraph,\
+                if best_dist == None or nodeEdge.get_outdoor_distance() < max_dist_outdoors:
+                    path[1] += nodeEdge.get_total_distance()
+                    path[2] += nodeEdge.get_outdoor_distance()
+                    newBestPath, newBestDist = get_best_path(digraph=digraph,\
                                                 start=start,\
                                                 end=end,\
                                                 path=path,\
                                                 max_dist_outdoors=max_dist_outdoors-nodeEdge.get_outdoor_distance(),\
-                                                best_dist=best_dist-nodeEdge.get_total_distance(),\
-                                                best_path=None\
+                                                best_dist=best_dist,\
+                                                best_path=best_path\
                                             )
+                    
+                    if newBestPath != None and newBestDist <= best_dist:
+                        best_path = newBestPath
+                        best_dist = newBestDist
+        return (best_path, best_dist)
 
 
 # Problem 3c: Implement directed_dfs
@@ -176,8 +185,10 @@ def directed_dfs(digraph:object, start:str, end:str, max_total_dist:int, max_dis
     """
     start_node = Node(start)
     end_node = Node(end)
-    best_path = get_best_path(digraph=digraph, start=start_node, end=end_node, path=[],\
+    best_path = get_best_path(digraph=digraph, start=start_node, end=end_node, path=[[],0,0],\
                             max_dist_outdoors=max_dist_outdoors, best_dist=max_total_dist, best_path=None)
+    print(best_path)
+    return best_path
 
 
 
@@ -271,9 +282,6 @@ class Ps2Test(unittest.TestCase):
 if __name__ == "__main__":
     # unittest.main()
 
-    # graph = load_map('mit_map.txt')
-    # print(graph)
-
-    edge = WeightedEdge(Node('a'), Node('b'), 15, 10)
-    print(edge)
-    print(str(edge))
+    graph = load_map('test_map.txt')
+    print(graph)
+    print(directed_dfs(digraph=graph, start='1', end='3', max_total_dist=20, max_dist_outdoors=8))
