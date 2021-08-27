@@ -91,7 +91,7 @@ def load_map(map_filename):
 
 # Problem 3b: Implement get_best_path
 def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_outdoors:int, best_dist:int,
-                  best_path:list, passEdge:list=[]):
+                  best_path:list, distance=0, outdoor=0):
     """
     Finds the shortest path between buildings subject to constraints.
 
@@ -124,8 +124,9 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
         If there exists no path that satisfies max_total_dist and
         max_dist_outdoors constraints, then return None.
     """
-    path[0] = path[0] + [start]
 
+    path = path+ [start]
+    print(f"path at start:{path}")
     if not digraph.has_node(start) or not digraph.has_node(end):
         raise ValueError('Verify Node start and end')
     elif start == end:
@@ -136,13 +137,12 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
         for nodeEdge in digraph.get_edges_for_node(start):
             print(nodeEdge)
             print(f"path before checking condition:{path}")
-            passEdge.append(str(nodeEdge))
             #destination can not be duplicate with the path that already pass
-            if nodeEdge not in passEdge:
+            if nodeEdge.get_destination() not in path:
                 print(f"qualify :{nodeEdge}")
                 if best_dist == None or nodeEdge.get_outdoor_distance() < max_dist_outdoors:
-                    path[1] += nodeEdge.get_total_distance()
-                    path[2] += nodeEdge.get_outdoor_distance()
+                    distance += nodeEdge.get_total_distance()
+                    outdoor += nodeEdge.get_outdoor_distance()
                     #destination of edge is new source of next traveling
                     new_src = nodeEdge.get_destination()
 
@@ -153,15 +153,22 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
                                                 max_dist_outdoors=max_dist_outdoors-nodeEdge.get_outdoor_distance(),\
                                                 best_dist=best_dist,\
                                                 best_path=best_path,\
-                                                passEdge=passEdge
+                                                distance=distance,\
+                                                outdoor=outdoor
                                             )
-                    print(f"test newBestPath: {newBestPath}")
+                    print(f"distance: {distance}")
+                    print(f"outdoor: {outdoor}")
                     
-                    if newBestPath != None and newBestPath[1] <= best_dist:
-                        print(f"newbestpath: {newBestPath}")
-                        best_dist = newBestPath[1]
+                    if newBestPath != None and distance <= best_dist:
+                        best_path = newBestPath
+                        best_dist = distance
+                        outdoorInteract = outdoor
+                        print(f"best_path: {best_path}")
+                        print(f"best_dist: {best_dist}")
+                        print(f"outdoorInteract: {outdoorInteract}")
+
                         
-    return newBestPath
+    return newBestPath, best_dist, outdoorInteract
 
 # Problem 3c: Implement directed_dfs
 def directed_dfs(digraph:object, start:str, end:str, max_total_dist:int, max_dist_outdoors:int):
@@ -194,9 +201,13 @@ def directed_dfs(digraph:object, start:str, end:str, max_total_dist:int, max_dis
     """
     start_node = Node(start)
     end_node = Node(end)
-    best_path = get_best_path(digraph=digraph, start=start_node, end=end_node, path=[[],0,0],\
+    best_path, best_dist, outdoor = get_best_path(digraph=digraph, start=start_node, end=end_node, path=[],\
                             max_dist_outdoors=max_dist_outdoors, best_dist=max_total_dist, best_path=None)
-    print(best_path)
+
+    print(f"shortest path {best_path}")
+    print(f"shortest distance {best_dist}")
+    print(f"outdoor interact {outdoor}")
+
     return best_path
 
 
