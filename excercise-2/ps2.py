@@ -135,6 +135,7 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
         return path
     else:
         for nodeEdge in digraph.get_edges_for_node(start):
+            breakpoint()
             print(nodeEdge)
             print(f"path before checking condition:{path}")
             #destination can not be duplicate with the path that already pass
@@ -156,6 +157,7 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
                                                 distance=distance,\
                                                 outdoor=outdoor
                                             )
+                    print(f"newBestPath: {newBestPath}")
                     print(f"distance: {distance}")
                     print(f"outdoor: {outdoor}")
                     
@@ -163,12 +165,13 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
                         best_path = newBestPath
                         best_dist = distance
                         outdoorInteract = outdoor
+                        print("####################################")
                         print(f"best_path: {best_path}")
                         print(f"best_dist: {best_dist}")
                         print(f"outdoorInteract: {outdoorInteract}")
 
-                        
-    return newBestPath, best_dist, outdoorInteract
+    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    return best_path, best_dist, outdoorInteract
 
 # Problem 3c: Implement directed_dfs
 def directed_dfs(digraph:object, start:str, end:str, max_total_dist:int, max_dist_outdoors:int):
