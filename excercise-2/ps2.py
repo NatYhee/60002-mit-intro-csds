@@ -155,11 +155,9 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
                     #destination of edge is new source of next traveling
                     new_src = nodeEdge.get_destination()
 
-                    newBestPath = get_best_path(digraph, new_src, end, path, max_dist_outdoors, best_dist, best_path)
-
-                    # newBestPath = get_best_path(digraph=digraph, start=new_src, end=end, path=path, 
-                    #                             max_dist_outdoors=max_dist_outdoors-nodeEdge.get_outdoor_distance(),\
-                    #                             best_dist=best_dist, best_path=best_path, distance=distance, outdoor=outdoor)
+                    newBestPath = get_best_path(digraph=digraph, start=new_src, end=end, path=path, 
+                                                max_dist_outdoors=max_dist_outdoors,\
+                                                best_dist=best_dist, best_path=best_path)
                     
                     if newBestPath != None:
                         totalDistance, totalOutdoor = get_distance(digraph, newBestPath)
@@ -201,12 +199,15 @@ def directed_dfs(digraph:object, start:str, end:str, max_total_dist:int, max_dis
     """
     start_node = Node(start)
     end_node = Node(end)
-    best_path = get_best_path(digraph=digraph, start=start_node, end=end_node, path=[],\
+    shortest_path_node = get_best_path(digraph=digraph, start=start_node, end=end_node, path=[],\
                             max_dist_outdoors=max_dist_outdoors, best_dist=max_total_dist, best_path=None)
 
-    print(f"shortest path {best_path}")
+    if shortest_path_node is None:
+        raise ValueError
+    
+    shortest_path = [node.get_name() for node in shortest_path_node]
 
-    return best_path
+    return shortest_path
 
 
 
@@ -298,7 +299,7 @@ class Ps2Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # unittest.main()
+    unittest.main()
 
-    graph = load_map('test_map.txt')
-    print(directed_dfs(digraph=graph, start='1', end='3', max_total_dist=20, max_dist_outdoors=8))
+    # graph = load_map('test_map.txt')
+    # print(directed_dfs(digraph=graph, start='1', end='3', max_total_dist=20, max_dist_outdoors=5))
