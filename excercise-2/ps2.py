@@ -90,6 +90,22 @@ def load_map(map_filename):
 #
 
 # Problem 3b: Implement get_best_path
+def get_distance(digraph, path):
+    lsTravelPath = path
+    totalDistance = 0
+    totalOutdoor = 0
+
+    for numPath in range(len(lsTravelPath)):
+        if numPath == (len(lsTravelPath) - 1):
+            pass
+        else:
+            for edge in digraph.get_edges_for_node(lsTravelPath[numPath]):
+                if edge.get_destination() == lsTravelPath[numPath + 1]:
+                    totalDistance += edge.get_total_distance()
+                    totalOutdoor += edge.get_outdoor_distance()
+    return totalDistance, totalOutdoor
+    
+    
 def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_outdoors:int, best_dist:int,
                   best_path:list, distance=0, outdoor=0):
     """
@@ -124,54 +140,35 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
         If there exists no path that satisfies max_total_dist and
         max_dist_outdoors constraints, then return None.
     """
+    path = path + [start]
 
-    path = path+ [start]
-    print(f"path at start:{path}")
     if not digraph.has_node(start) or not digraph.has_node(end):
         raise ValueError('Verify Node start and end')
     elif start == end:
         #When arriving destination node
-        print(f'start = end {path}')
         return path
     else:
         for nodeEdge in digraph.get_edges_for_node(start):
-            breakpoint()
-            print(nodeEdge)
-            print(f"path before checking condition:{path}")
+            nodeEdgeStr = str(nodeEdge)
             #destination can not be duplicate with the path that already pass
             if nodeEdge.get_destination() not in path:
-                print(f"qualify :{nodeEdge}")
-                if best_dist == None or nodeEdge.get_outdoor_distance() < max_dist_outdoors:
-                    distance += nodeEdge.get_total_distance()
-                    outdoor += nodeEdge.get_outdoor_distance()
                     #destination of edge is new source of next traveling
                     new_src = nodeEdge.get_destination()
 
-                    newBestPath = get_best_path(digraph=digraph,\
-                                                start=new_src,\
-                                                end=end,\
-                                                path=path,\
-                                                max_dist_outdoors=max_dist_outdoors-nodeEdge.get_outdoor_distance(),\
-                                                best_dist=best_dist,\
-                                                best_path=best_path,\
-                                                distance=distance,\
-                                                outdoor=outdoor
-                                            )
-                    print(f"newBestPath: {newBestPath}")
-                    print(f"distance: {distance}")
-                    print(f"outdoor: {outdoor}")
-                    
-                    if newBestPath != None and distance <= best_dist:
-                        best_path = newBestPath
-                        best_dist = distance
-                        outdoorInteract = outdoor
-                        print("####################################")
-                        print(f"best_path: {best_path}")
-                        print(f"best_dist: {best_dist}")
-                        print(f"outdoorInteract: {outdoorInteract}")
+                    newBestPath = get_best_path(digraph, new_src, end, path, max_dist_outdoors, best_dist, best_path)
 
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-    return best_path, best_dist, outdoorInteract
+                    # newBestPath = get_best_path(digraph=digraph, start=new_src, end=end, path=path, 
+                    #                             max_dist_outdoors=max_dist_outdoors-nodeEdge.get_outdoor_distance(),\
+                    #                             best_dist=best_dist, best_path=best_path, distance=distance, outdoor=outdoor)
+                    
+                    if newBestPath != None:
+                        totalDistance, totalOutdoor = get_distance(digraph, newBestPath)
+
+                        if totalDistance <= best_dist and totalOutdoor <= max_dist_outdoors:
+                            best_path = newBestPath
+                            best_dist = totalDistance
+
+    return best_path
 
 # Problem 3c: Implement directed_dfs
 def directed_dfs(digraph:object, start:str, end:str, max_total_dist:int, max_dist_outdoors:int):
@@ -204,12 +201,10 @@ def directed_dfs(digraph:object, start:str, end:str, max_total_dist:int, max_dis
     """
     start_node = Node(start)
     end_node = Node(end)
-    best_path, best_dist, outdoor = get_best_path(digraph=digraph, start=start_node, end=end_node, path=[],\
+    best_path = get_best_path(digraph=digraph, start=start_node, end=end_node, path=[],\
                             max_dist_outdoors=max_dist_outdoors, best_dist=max_total_dist, best_path=None)
 
     print(f"shortest path {best_path}")
-    print(f"shortest distance {best_dist}")
-    print(f"outdoor interact {outdoor}")
 
     return best_path
 
