@@ -8,7 +8,6 @@
 # Finding shortest paths through MIT buildings
 #
 import unittest
-import Tuple
 from graph import Digraph, Node, WeightedEdge
 from utils import textfile_to_list
 
@@ -91,7 +90,7 @@ def load_map(map_filename):
 #
 
 # Problem 3b: Implement get_best_path
-def get_distance(digraph, path) -> Tuple[float, float]:
+def get_distance(digraph, path):
     """
     Finding total distance and outdoor distance by retriving the number from created class
 
