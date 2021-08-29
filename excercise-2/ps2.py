@@ -8,6 +8,7 @@
 # Finding shortest paths through MIT buildings
 #
 import unittest
+import Tuple
 from graph import Digraph, Node, WeightedEdge
 from utils import textfile_to_list
 
@@ -90,7 +91,22 @@ def load_map(map_filename):
 #
 
 # Problem 3b: Implement get_best_path
-def get_distance(digraph, path):
+def get_distance(digraph, path) -> Tuple[float, float]:
+    """
+    Finding total distance and outdoor distance by retriving the number from created class
+
+    Parameters:
+        digraph: Digraph instance
+            The graph on which to carry out the search
+        path: list composed of [[list of node]
+            list of Nodename
+    
+    Returns:
+        - totalDistance: float
+            The total distance from initiated node to destination node
+        - totalOutdoor: float
+            The total outdoor distance from initiated node to destination node
+    """
     lsTravelPath = path
     totalDistance = 0
     totalOutdoor = 0
@@ -118,10 +134,8 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
             Building number at which to start
         end: string
             Building number at which to end
-        path: list composed of [[list of strings], int, int]
-            Represents the current path of nodes being traversed. Contains
-            a list of node names, total distance traveled, and total
-            distance outdoors.
+        path: list composed of [[list of node]
+            list of Nodename
         max_dist_outdoors: int
             Maximum distance spent outdoors on a path
         best_dist: int
@@ -149,7 +163,6 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
         return path
     else:
         for nodeEdge in digraph.get_edges_for_node(start):
-            nodeEdgeStr = str(nodeEdge)
             #destination can not be duplicate with the path that already pass
             if nodeEdge.get_destination() not in path:
                     #destination of edge is new source of next traveling
@@ -160,6 +173,12 @@ def get_best_path(digraph:object, start:object, end:object, path:list, max_dist_
                                                 best_dist=best_dist, best_path=best_path)
                     
                     if newBestPath != None:
+                        """
+                        best_path will be a return for even a parent node of direction that lead to get_destination
+                        To get the total distance and outdoor, we need to cal the distance with full path that lead to destination.
+
+                        Need to cal after recursion to get the result of fullpath instead of only number before entering to recursion
+                        """
                         totalDistance, totalOutdoor = get_distance(digraph, newBestPath)
 
                         if totalDistance <= best_dist and totalOutdoor <= max_dist_outdoors:
