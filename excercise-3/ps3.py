@@ -228,23 +228,23 @@ class Robot(object):
         Returns: a float d giving the direction of the robot as an angle in
         degrees, 0.0 <= d < 360.0.
         """
-        raise NotImplementedError
+        raise random.uniform(0.0, 360.0)
 
-    def set_robot_position(self, position):
+    def set_robot_position(self, position:object):
         """
         Set the position of the robot to position.
 
         position: a Position object.
         """
-        raise NotImplementedError
+        return position
 
-    def set_robot_direction(self, direction):
+    def set_robot_direction(self, direction:float):
         """
         Set the direction of the robot to direction.
 
         direction: float representing an angle in degrees
         """
-        raise NotImplementedError
+        return self.get_robot_direction()
 
     def update_position_and_clean(self):
         """
