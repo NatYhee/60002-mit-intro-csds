@@ -139,7 +139,7 @@ class RectangularRoom(object):
         
         return total_cleaned_tiles
         
-    def is_position_in_room(self, pos) -> bool:
+    def is_position_in_room(self, pos:object) -> bool:
         """
         Determines if pos is inside the room.
 
@@ -228,7 +228,7 @@ class Robot(object):
         Returns: a float d giving the direction of the robot as an angle in
         degrees, 0.0 <= d < 360.0.
         """
-        raise random.uniform(0.0, 360.0)
+        return self._direction
 
     def set_robot_position(self, position:object):
         """
@@ -236,7 +236,10 @@ class Robot(object):
 
         position: a Position object.
         """
-        return position
+        if self._room.is_position_in_room(position):
+            self._position = position
+        else:
+            raise ValueError
 
     def set_robot_direction(self, direction:float):
         """
@@ -244,7 +247,10 @@ class Robot(object):
 
         direction: float representing an angle in degrees
         """
-        return self.get_robot_direction()
+        if direction >= 0.0 and direction <= 360.0:
+            self._direction = direction
+        else:
+            raise ValueError
 
     def update_position_and_clean(self):
         """
