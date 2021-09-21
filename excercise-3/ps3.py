@@ -81,7 +81,7 @@ class RectangularRoom(object):
         height: an integer > 0
         dirt_amount: an integer >= 0
         """
-        self._witdth = width
+        self._width = width
         self._height = height
         self._dirt_amount = dirt_amount
         self._dict_tiles = {}
@@ -106,7 +106,7 @@ class RectangularRoom(object):
         selected_tile = (math.floor(pos.get_x()), math.floor(pos.get_y()))
         init_dirt_amount = self._dict_tiles[selected_tile]
         leftover_dirt_amount = max(init_dirt_amount - capacity, 0)
-        self._dict_tiles[(pos.get_x(), pos.get_y())] = leftover_dirt_amount
+        self._dict_tiles[selected_tile] = leftover_dirt_amount
 
     def is_tile_cleaned(self, m:int, n:int) -> bool:
         """
@@ -291,7 +291,7 @@ class EmptyRoom(RectangularRoom):
         Returns: a Position object; a valid random position (inside the room).
         """
 
-        rand_width = round(random.uniform(float(0), float(self._witdth)),1)
+        rand_width = round(random.uniform(float(0), float(self._width)),1)
         rand_height =round(random.uniform(float(0), float(self._height)),1)
         rand_position = Position(rand_width, rand_height)
 
@@ -402,21 +402,21 @@ class StandardRobot(Robot):
         """
 
         #Get Current Position and Direction
-        ini_position = self.get_robot_postion() #position object
+        ini_position = self.get_robot_position() #position object
 
-        new_position = ini_position.get_new_position(angle=self.get_robot_direction(), speed=self.speed) #position object
+        new_position = ini_position.get_new_position(angle=self.get_robot_direction(), speed=self._speed) #position object
         
         while(self._room.is_position_valid(new_position)==False):
             new_rand_direction = round(random.uniform(float(0), float(360)), 1)
             self.set_robot_direction(new_rand_direction)
-            new_position = ini_position.get_new_position(angle=self.get_robot_direction(), speed=self.speed) #position object
+            new_position = ini_position.get_new_position(angle=self.get_robot_direction(), speed=self._speed) #position object
         
         self.set_robot_position(new_position)
         self._room.clean_tile_at_position(new_position, self._capacity)
 
 # Uncomment this line to see your implementation of StandardRobot in action!
-#test_robot_movement(StandardRobot, EmptyRoom)
-#test_robot_movement(StandardRobot, FurnishedRoom)
+test_robot_movement(StandardRobot, EmptyRoom)
+# test_robot_movement(StandardRobot, FurnishedRoom)
 
 # === Problem 4
 class FaultyRobot(Robot):
