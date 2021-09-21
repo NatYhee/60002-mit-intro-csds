@@ -272,21 +272,26 @@ class EmptyRoom(RectangularRoom):
         """
         Returns: an integer; the total number of tiles in the room
         """
-        raise NotImplementedError
+        return len(list(self._dict_tiles.keys()))
         
-    def is_position_valid(self, pos):
+    def is_position_valid(self, pos:object):
         """
         pos: a Position object.
         
         Returns: True if pos is in the room, False otherwise.
         """
-        raise NotImplementedError
+        return self.is_position_in_room(pos)
         
     def get_random_position(self):
         """
         Returns: a Position object; a valid random position (inside the room).
         """
-        raise NotImplementedError
+
+        rand_width = random.uniform(0.0, self._witdth)
+        rand_height = random.uniform(0.0, self._height)
+        rand_position = Position(rand_width, rand_height)
+
+        raise rand_position
 
 class FurnishedRoom(RectangularRoom):
     """
