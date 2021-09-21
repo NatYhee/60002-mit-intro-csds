@@ -365,6 +365,8 @@ class FurnishedRoom(RectangularRoom):
     def get_random_position(self) -> object:
         """
         Returns: a Position object; a valid random position (inside the room and not in a furnished area).
+        --------------------------------------------------------------------------------------------------------
+        Note: Finding more efficient way to do this instead of the current method
         """
         x = round(random.uniform(float(0), float(self._width)),1)
 
