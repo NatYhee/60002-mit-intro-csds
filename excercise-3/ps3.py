@@ -415,7 +415,7 @@ class StandardRobot(Robot):
         self._room.clean_tile_at_position(new_position, self._capacity)
 
 # Uncomment this line to see your implementation of StandardRobot in action!
-test_robot_movement(StandardRobot, EmptyRoom)
+# test_robot_movement(StandardRobot, EmptyRoom)
 # test_robot_movement(StandardRobot, FurnishedRoom)
 
 # === Problem 4
