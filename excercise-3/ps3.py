@@ -284,8 +284,8 @@ class EmptyRoom(RectangularRoom):
         Returns: a Position object; a valid random position (inside the room).
         """
 
-        rand_width = round(random.uniform(0.0, self._witdth),1)
-        rand_height =round(random.uniform(0.0, self._height),1)
+        rand_width = round(random.uniform(float(0), float(self._witdth)),1)
+        rand_height =round(random.uniform(float(0), float(self._height)),1)
         rand_position = Position(rand_width, rand_height)
 
         return rand_position
@@ -351,7 +351,10 @@ class FurnishedRoom(RectangularRoom):
         
         returns: True if pos is in the room and is unfurnished, False otherwise.
         """
-        return not self.is_tile_furnished(pos.get_x(), pos.get_y()) and self.is_position_in_room
+        #Don't forget that position is float while tile is integer. So, need to using math.floor
+        x_width = math.floor(pos.get_x())
+        y_height = math.floor(pos.get_y())
+        return not self.is_tile_furnished(x_width, y_height) and self.is_position_in_room(pos)
         
     def get_num_tiles(self) -> int:
         """
@@ -363,9 +366,14 @@ class FurnishedRoom(RectangularRoom):
         """
         Returns: a Position object; a valid random position (inside the room and not in a furnished area).
         """
-        rand_
+        x = random.uniform(float(0), float(self._width))
+        y = random.uniform(float(0), float(self._height))
 
-        return rand_position
+        while not self.is_position_valid(Position(x, y)):
+            x = random.uniform(float(0), float(self._width))
+            y = random.uniform(float(0), float(self._height))
+        
+        return Position(x, y)
 
 # === Problem 3
 class StandardRobot(Robot):
