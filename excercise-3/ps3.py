@@ -326,12 +326,12 @@ class FurnishedRoom(RectangularRoom):
         furniture lies in the room.
         """
         # This addFurnitureToRoom method is implemented for you. Do not change it.
-        furniture_width = random.randint(1, self.width - 1)
-        furniture_height = random.randint(1, self.height - 1)
+        furniture_width = random.randint(1, self._width - 1)
+        furniture_height = random.randint(1, self._height - 1)
 
         # Randomly choose bottom left corner of the furniture item.    
-        f_bottom_left_x = random.randint(0, self.width - furniture_width)
-        f_bottom_left_y = random.randint(0, self.height - furniture_height)
+        f_bottom_left_x = random.randint(0, self._width - furniture_width)
+        f_bottom_left_y = random.randint(0, self._height - furniture_height)
 
         # Fill list with tuples of furniture tiles.
         for i in range(f_bottom_left_x, f_bottom_left_x + furniture_width):
@@ -376,6 +376,7 @@ class FurnishedRoom(RectangularRoom):
         Note: Finding more efficient way to do this instead of the current method
         """
         x = round(random.uniform(float(0), float(self._width)),1)
+        y = round(random.uniform(float(0), float(self._height)),1)
 
         while not self.is_position_valid(Position(x, y)):
             x = round(random.uniform(float(0), float(self._width)),1)
