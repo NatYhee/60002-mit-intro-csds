@@ -33,7 +33,7 @@ class Position(object):
     def get_y(self):
         return self.y
     
-    def get_new_position(self, angle, speed):
+    def get_new_position(self, angle, speed) -> object:
         """
         Computes and returns the new Position after a single clock-tick has
         passed, with this object as the current position, and with the
@@ -214,35 +214,42 @@ class Robot(object):
         self._speed = speed
         self._capacity = capacity
 
-    def get_robot_position(self):
+        self._position = self._room.get_random_position()
+        self._direction = round(random.uniform(float(0), float(360)), 1)
+
+    def get_robot_position(self) -> object:
         """
         Returns: a Position object giving the robot's position in the room.
         """
         return self._position
 
-    def get_robot_direction(self):
+    def get_robot_direction(self) -> float:
         """
         Returns: a float d giving the direction of the robot as an angle in
         degrees, 0.0 <= d < 360.0.
         """
         return self._direction
 
-    def set_robot_position(self, position:object):
+    def set_robot_position(self, position:object) -> None:
         """
         Set the position of the robot to position.
 
         position: a Position object.
+        ----------------------------------------------------------------
+        note: guess that this is for force assign position of the robot
         """
         if self._room.is_position_in_room(position):
             self._position = position
         else:
             raise ValueError
 
-    def set_robot_direction(self, direction:float):
+    def set_robot_direction(self, direction:float) -> None:
         """
         Set the direction of the robot to direction.
 
         direction: float representing an angle in degrees
+        ----------------------------------------------------------------
+        note: guess that this is for force assign direction of the robot
         """
         if direction >= 0.0 and direction <= 360.0:
             self._direction = direction
@@ -393,7 +400,19 @@ class StandardRobot(Robot):
         rotate once to a random new direction, and stay stationary) and clean the dirt on the tile
         by its given capacity. 
         """
-        raise NotImplementedError
+
+        #Get Current Position and Direction
+        ini_position = self.get_robot_postion() #position object
+
+        new_position = ini_position.get_new_position(angle=self.get_robot_direction(), speed=self.speed) #position object
+        
+        while(self._room.is_position_valid(new_position)==False):
+            new_rand_direction = round(random.uniform(float(0), float(360)), 1)
+            self.set_robot_direction(new_rand_direction)
+            new_position = ini_position.get_new_position(angle=self.get_robot_direction(), speed=self.speed) #position object
+        
+        self.set_robot_position(new_position)
+        self._room.clean_tile_at_position(new_position, self._capacity)
 
 # Uncomment this line to see your implementation of StandardRobot in action!
 #test_robot_movement(StandardRobot, EmptyRoom)
