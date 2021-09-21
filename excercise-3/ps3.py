@@ -366,12 +366,11 @@ class FurnishedRoom(RectangularRoom):
         """
         Returns: a Position object; a valid random position (inside the room and not in a furnished area).
         """
-        x = random.uniform(float(0), float(self._width))
-        y = random.uniform(float(0), float(self._height))
+        x = round(random.uniform(float(0), float(self._width)),1)
 
         while not self.is_position_valid(Position(x, y)):
-            x = random.uniform(float(0), float(self._width))
-            y = random.uniform(float(0), float(self._height))
+            x = round(random.uniform(float(0), float(self._width)),1)
+            y = round(random.uniform(float(0), float(self._height)),1)
         
         return Position(x, y)
 
