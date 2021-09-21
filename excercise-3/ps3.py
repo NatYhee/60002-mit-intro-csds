@@ -146,10 +146,7 @@ class RectangularRoom(object):
         pos: a Position object.
         Returns: True if pos is in the room, False otherwise.
         """
-        xAxis = math.floor(pos.get_x())
-        yAxis = math.floor(pos.get_y())
-
-        if xAxis <= self._width and yAxis <= self._height:
+        if 0 <= pos.get_x() <= self._width and 0 <= pos.get_y() <= self._height:
             return True
         else:
             return False
@@ -287,11 +284,11 @@ class EmptyRoom(RectangularRoom):
         Returns: a Position object; a valid random position (inside the room).
         """
 
-        rand_width = random.uniform(0.0, self._witdth)
-        rand_height = random.uniform(0.0, self._height)
+        rand_width = round(random.uniform(0.0, self._witdth),1)
+        rand_height =round(random.uniform(0.0, self._height),1)
         rand_position = Position(rand_width, rand_height)
 
-        raise rand_position
+        return rand_position
 
 class FurnishedRoom(RectangularRoom):
     """
