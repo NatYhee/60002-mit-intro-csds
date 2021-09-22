@@ -460,7 +460,7 @@ class FaultyRobot(Robot):
         """
         ini_position = self.get_robot_position()
 
-        if self.get_faulty():
+        if self.gets_faulty():
 
             new_rand_direction = round(random.uniform(float(0), float(360)), 1)
             self.set_robot_direction(new_rand_direction)
