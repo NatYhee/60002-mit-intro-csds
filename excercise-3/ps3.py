@@ -502,7 +502,17 @@ def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_
     robot_type: class of robot to be instantiated (e.g. StandardRobot or
                 FaultyRobot)
     """
-    raise NotImplementedError
+    ls_num_iter = []
+
+    for robot in range(num_robots):
+        room = EmptyRoom(width, height, dirt_amount)
+        mrRobot = robot_type(room.get_random_position(), speed, capacity)
+        coverage = 0
+        num_iter = 0
+
+        while coverage < min_coverage:
+
+            
 
 
 # print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 50, StandardRobot)))
