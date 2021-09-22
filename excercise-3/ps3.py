@@ -407,6 +407,7 @@ class StandardRobot(Robot):
 
         new_position = ini_position.get_new_position(angle=self.get_robot_direction(), speed=self._speed) #position object
         
+        #If the position is not valid, we re-random the angle of the robot
         while(self._room.is_position_valid(new_position)==False):
             new_rand_direction = round(random.uniform(float(0), float(360)), 1)
             self.set_robot_direction(new_rand_direction)
@@ -429,7 +430,7 @@ class FaultyRobot(Robot):
     p = 0.15
 
     @staticmethod
-    def set_faulty_probability(prob):
+    def set_faulty_probability(prob:float):
         """
         Sets the probability of getting faulty equal to PROB.
 
@@ -457,9 +458,26 @@ class FaultyRobot(Robot):
         StandardRobot at this time-step (checking if it can move to a new position,
         move there if it can, pick a new direction and stay stationary if it can't)
         """
-        raise NotImplementedError
+        ini_position = self.get_robot_position()
+
+        if self.get_faulty():
+
+            new_rand_direction = round(random.uniform(float(0), float(360)), 1)
+            self.set_robot_direction(new_rand_direction)
+
+        else:
+
+            new_position = ini_position.get_new_position(angle=self._direction, speed=self._speed)
+
+            while(self._room.is_position_valid(new_position)==False):
+                new_rand_direction = round(random.uniform(float(0), float(360)), 1)
+                self.set_robot_direction(new_rand_direction)
+                new_position = ini_position.get_new_position(angle=self.get_robot_direction(), speed=self._speed) #position object
         
-    
+            self.set_robot_position(new_position)
+            self._room.clean_tile_at_position(new_position, self._capacity)
+
+
 #test_robot_movement(FaultyRobot, EmptyRoom)
 
 # === Problem 5
