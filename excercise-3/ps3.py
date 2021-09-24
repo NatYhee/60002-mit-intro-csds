@@ -481,6 +481,15 @@ class FaultyRobot(Robot):
 #test_robot_movement(FaultyRobot, EmptyRoom)
 
 # === Problem 5
+
+def sum_iter_all_trial(dict_trial:dict) -> int:
+    sum_result = 0
+    for trial in dict_trial.keys():
+        ls_iter = dict_trial[trial]
+        sum_result += sum(ls_iter)/len(ls_iter)
+    return sum_result
+
+
 def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_coverage, num_trials,
                   robot_type):
     """
@@ -502,17 +511,27 @@ def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_
     robot_type: class of robot to be instantiated (e.g. StandardRobot or
                 FaultyRobot)
     """
-    ls_num_iter = []
 
-    for robot in range(num_robots):
+    dict_trial_result = {}
+
+    for trial in range(num_trials):
         room = EmptyRoom(width, height, dirt_amount)
-        mrRobot = robot_type(room.get_random_position(), speed, capacity)
-        coverage = 0
-        num_iter = 0
+        ls_robot = [ robot_type(room, speed, capacity) for _ in range(num_robots) ]
+        
+        dict_trial_result[trial] = []
 
-        while coverage < min_coverage:
+        for robot in ls_robot:
+            coverage = 0
+            num_iter = 0
 
-            
+            while coverage < min_coverage:
+                num_iter += 1
+                robot.update_position_and_clean()
+                coverage = float(robot._room.get_num_cleaned_tiles())/robot._room.get_num_tiles()
+
+            dict_trial_result[trial].append(num_iter)
+    print(dict_trial_result)
+    return sum_iter_all_trial(dict_trial_result)/num_trials
 
 
 # print ('avg time steps: ' + str(run_simulation(1, 1.0, 1, 5, 5, 3, 1.0, 50, StandardRobot)))
