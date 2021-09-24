@@ -515,12 +515,12 @@ def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_
     dict_trial_result = {}
 
     for trial in range(num_trials):
-        room = EmptyRoom(width, height, dirt_amount)
-        ls_robot = [ robot_type(room, speed, capacity) for _ in range(num_robots) ]
         
         dict_trial_result[trial] = []
 
-        for robot in ls_robot:
+        for _ in range(num_robots):
+            room = EmptyRoom(width, height, dirt_amount)
+            robot = robot_type(room, speed, capacity)
             coverage = 0
             num_iter = 0
 
