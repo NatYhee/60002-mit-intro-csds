@@ -81,8 +81,8 @@ class RectangularRoom(object):
         height: an integer > 0
         dirt_amount: an integer >= 0
         """
-        self._width = width
-        self._height = height
+        self._width = int(width)
+        self._height = int(height)
         self._dirt_amount = dirt_amount
         self._dict_tiles = {}
 
@@ -530,7 +530,7 @@ def run_simulation(num_robots, speed, capacity, width, height, dirt_amount, min_
                 coverage = float(robot._room.get_num_cleaned_tiles())/robot._room.get_num_tiles()
 
             dict_trial_result[trial].append(num_iter)
-    print(dict_trial_result)
+
     return sum_iter_all_trial(dict_trial_result)/num_trials
 
 
@@ -596,5 +596,5 @@ def show_plot_room_shape(title, x_label, y_label):
     pylab.show()
 
 
-#show_plot_compare_strategies('Time to clean 80% of a 20x20 room, for various numbers of robots','Number of robots','Time / steps')
-#show_plot_room_shape('Time to clean 80% of a 300-tile room for various room shapes','Aspect Ratio', 'Time / steps')
+# show_plot_compare_strategies('Time to clean 80% of a 20x20 room, for various numbers of robots','Number of robots','Time / steps')
+# show_plot_room_shape('Time to clean 80% of a 300-tile room for various room shapes','Aspect Ratio', 'Time / steps')
