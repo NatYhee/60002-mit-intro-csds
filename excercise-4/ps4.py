@@ -7,9 +7,10 @@ import math
 import numpy as np
 import pylab as pl
 import random
+import copy
 
 #setting seed for debugging
-random.seed(0)
+# random.seed(0)
 
 ##########################
 # End helper code
@@ -103,7 +104,7 @@ class SimpleBacteria(object):
             bool: True with probability self.death_prob, False otherwise.
         """
         current_death_prob = random.random()
-        return current_death_prob <= self._death_prob
+        return current_death_prob >= self._death_prob
 
     def reproduce(self, pop_density:float) -> object:
         """
@@ -131,11 +132,12 @@ class SimpleBacteria(object):
         Raises:
             NoChildException if this bacteria cell does not reproduce.
         """
-        #note from self interpretation: pop_density is float [0,1]
-        if self._birth_prob <= self._birth_prob*(1 -pop_density):
+        current_birth_prob = random.random()
+
+        if current_birth_prob >= self._birth_prob*(1 -pop_density):
             return SimpleBacteria(birth_prob=self._birth_prob, death_prob=self._death_prob)
         else:
-            return NoChildException()
+            raise NoChildException()
 
 
 class Patient(object):
@@ -143,23 +145,24 @@ class Patient(object):
     Representation of a simplified patient. The patient does not take any
     antibiotics and his/her bacteria populations have no antibiotic resistance.
     """
-    def __init__(self, bacteria, max_pop):
+    def __init__(self, bacteria:list, max_pop:int) -> None:
         """
         Args:
             bacteria (list of SimpleBacteria): The bacteria in the population
             max_pop (int): Maximum possible bacteria population size for
                 this patient
         """
-        pass  # TODO
+        self._bacteria = bacteria
+        self._max_pop = max_pop
 
-    def get_total_pop(self):
+    def get_total_pop(self) -> int:
         """
         Gets the size of the current total bacteria population.
 
         Returns:
             int: The total bacteria population
         """
-        pass  # TODO
+        return int(len(self._bacteria))
 
     def update(self):
         """
@@ -179,13 +182,29 @@ class Patient(object):
            bacteria cell should reproduce and add offspring bacteria cells to
            a list of bacteria in this patient. New offspring do not reproduce.
 
+           Note: New offspring do not reproduce.
+
         4. Reassign the patient's bacteria list to be the list of surviving
            bacteria and new offspring bacteria
 
         Returns:
             int: The total bacteria population at the end of the update
         """
-        pass  # TODO
+        ls_survived_bacteria = [bacteria for bacteria in self._bacteria if not bacteria.is_killed()]
+        population_density = float(len(ls_survived_bacteria)/self._max_pop)
+
+        #ls_all_bacteria = survived bacteria and new offspring bacteria
+        ls_all_bacteria = copy.deepcopy(ls_survived_bacteria)
+
+        #Finind that which bacteria cell giving an offspring
+        for bacteria in ls_survived_bacteria:
+            try:
+                offspring = bacteria.reproduce(pop_density=population_density)
+                ls_all_bacteria.append(offspring)
+            except NoChildException:
+                continue
+        
+        return ls_all_bacteria
 
 
 ##########################
@@ -485,18 +504,18 @@ def simulation_with_antibiotic(num_bacteria,
 
 # When you are ready to run the simulations, uncomment the next lines one
 # at a time
-total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
-                                                      max_pop=1000,
-                                                      birth_prob=0.3,
-                                                      death_prob=0.2,
-                                                      resistant=False,
-                                                      mut_prob=0.8,
-                                                      num_trials=50)
+# total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
+#                                                       max_pop=1000,
+#                                                       birth_prob=0.3,
+#                                                       death_prob=0.2,
+#                                                       resistant=False,
+#                                                       mut_prob=0.8,
+#                                                       num_trials=50)
 
-total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
-                                                      max_pop=1000,
-                                                      birth_prob=0.17,
-                                                      death_prob=0.2,
-                                                      resistant=False,
-                                                      mut_prob=0.8,
-                                                      num_trials=50)
+# total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
+#                                                       max_pop=1000,
+#                                                       birth_prob=0.17,
+#                                                       death_prob=0.2,
+#                                                       resistant=False,
+#                                                       mut_prob=0.8,
+#                                                       num_trials=50)
