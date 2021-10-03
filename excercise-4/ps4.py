@@ -8,6 +8,8 @@ import numpy as np
 import pylab as pl
 import random
 
+#setting seed for debugging
+random.seed(0)
 
 ##########################
 # End helper code
