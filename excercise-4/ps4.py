@@ -83,7 +83,7 @@ def make_two_curve_plot(x_coords,
 class SimpleBacteria(object):
     """A simple bacteria cell with no antibiotic resistance"""
 
-    def __init__(self, birth_prob:float, death_prob:float):
+    def __init__(self, birth_prob:float, death_prob:float) -> None:
         """
         Args:
             birth_prob (float in [0, 1]): Maximum possible reproduction
@@ -105,7 +105,7 @@ class SimpleBacteria(object):
         current_death_prob = random.random()
         return current_death_prob <= self._death_prob
 
-    def reproduce(self, pop_density:float):
+    def reproduce(self, pop_density:float) -> object:
         """
         Stochastically determines whether this bacteria cell reproduces at a
         time step. Called by the update() method in the Patient and
