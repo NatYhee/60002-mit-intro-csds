@@ -134,7 +134,7 @@ class SimpleBacteria(object):
         """
         current_birth_prob = random.random()
 
-        if current_birth_prob >= self._birth_prob*(1 -pop_density):
+        if current_birth_prob >= self._birth_prob*(1 - pop_density):
             return SimpleBacteria(birth_prob=self._birth_prob, death_prob=self._death_prob)
         else:
             raise NoChildException()
