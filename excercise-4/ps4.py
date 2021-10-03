@@ -10,7 +10,7 @@ import random
 import copy
 
 #setting seed for debugging
-# random.seed(0)
+random.seed(0)
 
 ##########################
 # End helper code
@@ -103,8 +103,8 @@ class SimpleBacteria(object):
         Returns:
             bool: True with probability self.death_prob, False otherwise.
         """
-        current_death_prob = random.random()
-        return current_death_prob >= self._death_prob
+        survive_prob = random.random()
+        return survive_prob <= self._death_prob
 
     def reproduce(self, pop_density:float) -> object:
         """
@@ -132,9 +132,9 @@ class SimpleBacteria(object):
         Raises:
             NoChildException if this bacteria cell does not reproduce.
         """
-        current_birth_prob = random.random()
+        offspring_prob = random.random()
 
-        if current_birth_prob >= self._birth_prob*(1 - pop_density):
+        if offspring_prob <= self._birth_prob*(1 - pop_density):
             return SimpleBacteria(birth_prob=self._birth_prob, death_prob=self._death_prob)
         else:
             raise NoChildException()
@@ -164,7 +164,7 @@ class Patient(object):
         """
         return int(len(self._bacteria))
 
-    def update(self):
+    def update(self) -> int:
         """
         Update the state of the bacteria population in this patient for a
         single time step. update() should execute the following steps in
@@ -202,16 +202,17 @@ class Patient(object):
                 offspring = bacteria.reproduce(pop_density=population_density)
                 ls_all_bacteria.append(offspring)
             except NoChildException:
-                continue
+                pass
         
-        return ls_all_bacteria
+        self._bacteria = ls_all_bacteria
+        return self.get_total_pop()
 
 
 ##########################
 # PROBLEM 2
 ##########################
 
-def calc_pop_avg(populations, n):
+def calc_pop_avg(populations:list, n:int) -> float:
     """
     Finds the average bacteria population size across trials at time step n
 
@@ -225,11 +226,11 @@ def calc_pop_avg(populations, n):
     pass  # TODO
 
 
-def simulation_without_antibiotic(num_bacteria,
-                                  max_pop,
-                                  birth_prob,
-                                  death_prob,
-                                  num_trials):
+def simulation_without_antibiotic(num_bacteria:int,
+                                  max_pop:int,
+                                  birth_prob:float,
+                                  death_prob:float,
+                                  num_trials:int) -> list:
     """
     Run the simulation and plot the graph for problem 2. No antibiotics
     are used, and bacteria do not have any antibiotic resistance.
@@ -241,6 +242,7 @@ def simulation_without_antibiotic(num_bacteria,
           recording the bacteria population after each time step. Note
           that the first time step should contain the starting number of
           bacteria in the patient
+    note: timesteps is exclicitly declared to be 300
 
     Then, plot the average bacteria population size (y-axis) as a function of
     elapsed time steps (x-axis) You might find the make_one_curve_plot
@@ -258,11 +260,27 @@ def simulation_without_antibiotic(num_bacteria,
         populations (list of lists or 2D array): populations[i][j] is the
             number of bacteria in trial i at time step j
     """
-    pass  # TODO
+    timesteps = 300
+    ls_population = []
 
+    for _ in range(num_trials):
+        ls_population_trial = []
+        ls_bacteria = [SimpleBacteria(birth_prob=birth_prob, death_prob=death_prob) for _ in range(num_bacteria)]
+        patient = Patient(bacteria=ls_bacteria, max_pop=max_pop)
+
+        for step in range(timesteps + 1):
+
+            if step == 0:
+                ls_population_trial.append(num_bacteria)
+            else:
+                ls_population_trial.append(patient.update())
+
+        ls_population.append(ls_population_trial)
+    
+    return ls_population
 
 # When you are ready to run the simulation, uncomment the next line
-# populations = simulation_without_antibiotic(100, 1000, 0.1, 0.025, 50)
+populations = simulation_without_antibiotic(100, 1000, 0.1, 0.025, 50)
 
 ##########################
 # PROBLEM 3
