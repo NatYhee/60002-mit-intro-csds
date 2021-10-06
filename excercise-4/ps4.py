@@ -287,11 +287,16 @@ def simulation_without_antibiotic(num_bacteria:int,
 # When you are ready to run the simulation, uncomment the next line
 populations = simulation_without_antibiotic(100, 1000, 0.1, 0.025, 50)
 
+avg_populations = [calc_pop_avg(populations=populations,n=index) for index in range(len(populations[0]))]
+x_axis = [i for i in range(len(avg_populations))]
+make_one_curve_plot(x_coords=x_axis, y_coords=avg_populations, x_label="number of steps", y_label="average population", title="SimpleBacteria Populations")
+
 ##########################
 # PROBLEM 3
 ##########################
 
-def calc_pop_std(populations, t):
+#adding function mean
+def calc_pop_std(populations:list, t:int) -> float:
     """
     Finds the standard deviation of populations across different trials
     at time step t by:
@@ -312,10 +317,23 @@ def calc_pop_std(populations, t):
         float: the standard deviation of populations across different trials at
              a specific time step
     """
-    pass  # TODO
+    #prepare example
+    population_t = [population[t] for population in populations]
+    n_sample = len(population_t)
+
+    #calculate mean
+    expected_t = float(sum(population_t)/n_sample)
+    
+    #calculate standard deviation
+    var = 0
+    for sample in population_t:
+        var += 1/(n_sample)*((sample - expected_t)**2)
+    
+    std = float(var**(1/2))
+    return std
 
 
-def calc_95_ci(populations, t):
+def calc_95_ci(populations:list, t:int) -> tuple:
     """
     Finds a 95% confidence interval around the average bacteria population
     at time t by:
@@ -336,8 +354,17 @@ def calc_95_ci(populations, t):
 
         I.e., you should return a tuple containing (mean, width)
     """
-    pass  # TODO
+    std = calc_pop_std(populations=populations, t=t)
+    std_error = std/(len(populations)**(1/2))
+    width = std_error*1.96
 
+    #prepare example
+    population_t = [population[t] for population in populations]
+    n_sample = len(population_t)
+
+    #calculate mean
+    expected_t = float(sum(population_t)/n_sample)
+    return expected_t, width
 
 ##########################
 # PROBLEM 4
