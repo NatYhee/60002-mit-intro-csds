@@ -383,7 +383,7 @@ class ResistantBacteria(SimpleBacteria):
                 bacteria cell. This is the maximum probability of the
                 offspring acquiring antibiotic resistance
         """
-        SimpleBacteria.__inint__(self, birth_prob, death_prob)
+        SimpleBacteria.__init__(self, birth_prob, death_prob)
         self._resistant = resistant
         self._mut_prob = mut_prob
 
@@ -450,7 +450,7 @@ class ResistantBacteria(SimpleBacteria):
                                         death_prob=self._death_prob,\
                                         resistant=self._resistant,\
                                         mut_prob=self._mut_prob)
-                                        
+
         elif is_reproduce and not self._resistant:
             is_mutate = self._is_mutate(pop_density=pop_density)
             if is_mutate:
@@ -478,7 +478,7 @@ class TreatedPatient(Patient):
     antibiotic and his/her bacteria population can acquire antibiotic
     resistance. The patient cannot go off an antibiotic once on it.
     """
-    def __init__(self, bacteria, max_pop):
+    def __init__(self, bacteria:list, max_pop:int) -> None:
         """
         Args:
             bacteria: The list representing the bacteria population (a list of
@@ -492,14 +492,15 @@ class TreatedPatient(Patient):
         Don't forget to call Patient's __init__ method at the start of this
         method.
         """
-        pass  # TODO
+        Patient.__init__(self, bacteria=bacteria, max_pop=max_pop)
+        self._on_antibiotic = False
 
-    def set_on_antibiotic(self):
+    def set_on_antibiotic(self) -> None:
         """
         Administer an antibiotic to this patient. The antibiotic acts on the
         bacteria population for all subsequent time steps.
         """
-        pass  # TODO
+        self._on_antibiotic = True
 
     def get_resist_pop(self):
         """
@@ -508,9 +509,9 @@ class TreatedPatient(Patient):
         Returns:
             int: the number of bacteria with antibiotic resistance
         """
-        pass  # TODO
+        return int(len(self._bacteria))
 
-    def update(self):
+    def update(self) -> int:
         """
         Update the state of the bacteria population in this patient for a
         single time step. update() should execute these actions in order:
@@ -535,7 +536,31 @@ class TreatedPatient(Patient):
         Returns:
             int: The total bacteria population at the end of the update
         """
-        pass  # TODO
+        #step 1
+        ls_survived_bacteria_wip = [bacteria for bacteria in self._bacteria if not bacteria.is_killed()]
+
+        #step 2
+        if self._on_antibiotic:
+            ls_survived_bacteria = [bacteria for bacteria in ls_survived_bacteria_wip if bacteria.get_resistant()]
+        else:
+            ls_survived_bacteria = ls_survived_bacteria_wip
+        
+        #step 3
+        population_density = float(len(ls_survived_bacteria)/self._max_pop)
+
+        #step 4
+        ls_all_bacteria = copy.deepcopy(ls_survived_bacteria)
+
+        for bacteria in ls_survived_bacteria:
+            try:
+                offspring = bacteria.reproduce(population_density=population_density)
+                ls_all_bacteria.append(offspring)
+            except NoChildException:
+                pass
+        
+        #step 5
+        self._bacteria = ls_all_bacteria
+        return self.get_resist_pop()
 
 
 ##########################
