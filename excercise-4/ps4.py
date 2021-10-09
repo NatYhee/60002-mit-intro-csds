@@ -364,7 +364,7 @@ def calc_95_ci(populations:list, t:int) -> tuple:
 
     #calculate mean
     expected_t = float(sum(population_t)/n_sample)
-    return expected_t, width
+    return (expected_t, width)
 
 ##########################
 # PROBLEM 4
@@ -373,7 +373,7 @@ def calc_95_ci(populations:list, t:int) -> tuple:
 class ResistantBacteria(SimpleBacteria):
     """A bacteria cell that can have antibiotic resistance."""
 
-    def __init__(self, birth_prob, death_prob, resistant, mut_prob):
+    def __init__(self, birth_prob:float, death_prob:float, resistant:bool, mut_prob:float):
         """
         Args:
             birth_prob (float in [0, 1]): reproduction probability
@@ -383,13 +383,16 @@ class ResistantBacteria(SimpleBacteria):
                 bacteria cell. This is the maximum probability of the
                 offspring acquiring antibiotic resistance
         """
-        pass  # TODO
+        SimpleBacteria.__inint__(self, birth_prob, death_prob)
+        self._resistant = resistant
+        self._mut_prob = mut_prob
 
-    def get_resistant(self):
+
+    def get_resistant(self) -> bool:
         """Returns whether the bacteria has antibiotic resistance"""
-        pass  # TODO
+        return self._resistant
 
-    def is_killed(self):
+    def is_killed(self) -> bool:
         """Stochastically determines whether this bacteria cell is killed in
         the patient's body at a given time step.
 
@@ -401,9 +404,16 @@ class ResistantBacteria(SimpleBacteria):
             bool: True if the bacteria dies with the appropriate probability
                 and False otherwise.
         """
-        pass  # TODO
+        if self._resistant:
+            death_prob = self._death_prob
+        elif not self._resistant:
+            death_prob = self._death_prob/4
+        
+        survive_prob = random.random()
+        return survive_prob <= death_prob
 
-    def reproduce(self, pop_density):
+
+    def reproduce(self, pop_density:float) -> object:
         """
         Stochastically determines whether this bacteria cell reproduces at a
         time step. Called by the update() method in the TreatedPatient class.
@@ -432,7 +442,34 @@ class ResistantBacteria(SimpleBacteria):
             as this bacteria. Otherwise, raises a NoChildException if this
             bacteria cell does not reproduce.
         """
-        pass  # TODO
+        offspring_prob = random.random()
+        is_reproduce = (offspring_prob <= self._birth_prob*(1 - pop_density))
+
+        if is_reproduce and self._resistant:
+            return ResistantBacteria(birth_prob=self._birth_prob,\
+                                        death_prob=self._death_prob,\
+                                        resistant=self._resistant,\
+                                        mut_prob=self._mut_prob)
+                                        
+        elif is_reproduce and not self._resistant:
+            is_mutate = self._is_mutate(pop_density=pop_density)
+            if is_mutate:
+                return ResistantBacteria(birth_prob=self._birth_prob,\
+                                        death_prob=self._death_prob,\
+                                        resistant=True,\
+                                        mut_prob=self._mut_prob)
+            elif not is_mutate:
+                return ResistantBacteria(birth_prob=self._birth_prob,\
+                        death_prob=self._death_prob,\
+                        resistant=self._resistant,\
+                        mut_prob=self._mut_prob)
+        
+        else:
+            raise NoChildException()
+    
+    def _is_mutate(self, pop_density:float) -> bool:
+        mutate_prob = random.random()
+        return mutate_prob <= self._mut_prob * (1-pop_density) 
 
 
 class TreatedPatient(Patient):
