@@ -664,12 +664,12 @@ def simulation_with_antibiotic(num_bacteria:int,
             #has not antibiotic is set as False default
             elif step <= timestep_no_antibiotic:
                 ls_population_trial.append(patient.update())
-                ls_resist_trail.append(patient.get_total_pop())
+                ls_resist_trail.append(patient.get_resist_pop())
             
             elif step > timestep_no_antibiotic:
                 patient.set_on_antibiotic()
                 ls_population_trial.append(patient.update())
-                ls_resist_trail.append(patient.get_total_pop())
+                ls_resist_trail.append(patient.get_resist_pop())
 
         ls_population.append(ls_population_trial)
         ls_resist.append(ls_resist_trail)
