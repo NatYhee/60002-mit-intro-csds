@@ -76,6 +76,21 @@ def make_two_curve_plot(x_coords,
     pl.title(title)
     pl.show()
 
+def execute_two_curve_plot(ls_y1:list, ls_y2:list):
+    x_axis = [i for i in range(len(ls_y1))]
+
+    ls_avg_y1 = [calc_pop_avg(populations=ls_y1, n=index) for index in range(len(ls_y1))]
+    ls_avg_y2 = [calc_pop_avg(populations=ls_y2, n=index) for index in range(len(ls_y2))]
+
+    make_two_curve_plot(x_coords=x_axis,
+                        y_coords1=ls_avg_y1,
+                        y_coords2=ls_avg_y2,
+                        y_name1="avg bacteria pop",
+                        y_name2="avg resit bacteria pop",
+                        x_label="steps",
+                        y_label="population",
+                        title="resistant bacteria")
+
 
 ##########################
 # PROBLEM 1
@@ -285,11 +300,11 @@ def simulation_without_antibiotic(num_bacteria:int,
     return ls_population
 
 # When you are ready to run the simulation, uncomment the next line
-populations = simulation_without_antibiotic(100, 1000, 0.1, 0.025, 50)
+# populations = simulation_without_antibiotic(100, 1000, 0.1, 0.025, 50)
 
-avg_populations = [calc_pop_avg(populations=populations,n=index) for index in range(len(populations[0]))]
-x_axis = [i for i in range(len(avg_populations))]
-make_one_curve_plot(x_coords=x_axis, y_coords=avg_populations, x_label="number of steps", y_label="average population", title="SimpleBacteria Populations")
+# avg_populations = [calc_pop_avg(populations=populations,n=index) for index in range(len(populations[0]))]
+# x_axis = [i for i in range(len(avg_populations))]
+# make_one_curve_plot(x_coords=x_axis, y_coords=avg_populations, x_label="number of steps", y_label="average population", title="SimpleBacteria Populations")
 
 ##########################
 # PROBLEM 3
@@ -502,14 +517,20 @@ class TreatedPatient(Patient):
         """
         self._on_antibiotic = True
 
-    def get_resist_pop(self):
+    def get_resist_pop(self) -> int:
         """
         Get the population size of bacteria cells with antibiotic resistance
 
         Returns:
             int: the number of bacteria with antibiotic resistance
         """
-        return int(len(self._bacteria))
+        resist_pop = 0
+
+        for bacteria in self._bacteria:
+            if bacteria.get_resistant():
+                resist_pop += 1
+
+        return resist_pop
 
     def update(self) -> int:
         """
@@ -553,27 +574,35 @@ class TreatedPatient(Patient):
 
         for bacteria in ls_survived_bacteria:
             try:
-                offspring = bacteria.reproduce(population_density=population_density)
+                offspring = bacteria.reproduce(pop_density=population_density)
                 ls_all_bacteria.append(offspring)
             except NoChildException:
                 pass
         
         #step 5
         self._bacteria = ls_all_bacteria
-        return self.get_resist_pop()
+        return self.get_total_pop()
 
 
 ##########################
 # PROBLEM 5
 ##########################
 
-def simulation_with_antibiotic(num_bacteria,
-                               max_pop,
-                               birth_prob,
-                               death_prob,
-                               resistant,
-                               mut_prob,
-                               num_trials):
+def get_tot_resist_pop(ls_bacteria):
+    tt_resist_pop = 0
+    for bacteria in ls_bacteria:
+        if bacteria.get_resistant():
+            tt_resist_pop += 1
+    return tt_resist_pop
+
+
+def simulation_with_antibiotic(num_bacteria:int,
+                               max_pop:int,
+                               birth_prob:float,
+                               death_prob:float,
+                               resistant:float,
+                               mut_prob:float,
+                               num_trials:int):
     """
     Runs simulations and plots graphs for problem 4.
 
@@ -584,6 +613,7 @@ def simulation_with_antibiotic(num_bacteria,
           simulation for an additional 250 timesteps, recording the total
           bacteria population and the resistance bacteria population after
           each time step
+    note: 150 timesteps for non antibiotic and 250 timesteps for having antibiotic
 
     Plot the average bacteria population size for both the total bacteria
     population and the antibiotic-resistant bacteria population (y-axis) as a
@@ -611,19 +641,54 @@ def simulation_with_antibiotic(num_bacteria,
             resistant_pop[i][j] is the number of resistant bacteria for
             trial i at time step j
     """
-    pass  # TODO
+    timestep_no_antibiotic = 150
+    timestep_antibiotic = 250
+    timesteps = timestep_no_antibiotic + timestep_antibiotic
+
+    ls_population = []
+    ls_resist = []
+
+    for _ in range(num_trials):
+        ls_population_trial = []
+        ls_resist_trail = []
+
+        ls_bacteria = [ResistantBacteria(birth_prob, death_prob, resistant, mut_prob) for _ in range(num_bacteria)]
+        patient = TreatedPatient(bacteria=ls_bacteria, max_pop=max_pop)
+
+        for step in range(timesteps + 1):
+
+            if step == 0:
+                ls_population_trial.append(len(ls_bacteria))
+                ls_resist_trail.append(get_tot_resist_pop(ls_bacteria))
+            
+            #has not antibiotic is set as False default
+            elif step <= timestep_no_antibiotic:
+                patient.update()
+                ls_population_trial.append(patient.update())
+                ls_resist_trail.append(patient.get_total_pop())
+            
+            elif step > timestep_no_antibiotic:
+                patient.set_on_antibiotic()
+                ls_population_trial.append(patient.update())
+                ls_resist_trail.append(patient.get_total_pop())
+
+        ls_population.append(ls_population_trial)
+        ls_resist.append(ls_resist_trail)
+    
+    return (ls_population, ls_resist)
 
 
 # When you are ready to run the simulations, uncomment the next lines one
 # at a time
-# total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
-#                                                       max_pop=1000,
-#                                                       birth_prob=0.3,
-#                                                       death_prob=0.2,
-#                                                       resistant=False,
-#                                                       mut_prob=0.8,
-#                                                       num_trials=50)
+total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
+                                                      max_pop=1000,
+                                                      birth_prob=0.3,
+                                                      death_prob=0.2,
+                                                      resistant=False,
+                                                      mut_prob=0.8,
+                                                      num_trials=50)
 
+execute_two_curve_plot(total_pop, resistant_pop)
 # total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
 #                                                       max_pop=1000,
 #                                                       birth_prob=0.17,
