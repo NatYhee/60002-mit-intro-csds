@@ -77,10 +77,11 @@ def make_two_curve_plot(x_coords,
     pl.show()
 
 def execute_two_curve_plot(ls_y1:list, ls_y2:list):
-    x_axis = [i for i in range(len(ls_y1))]
+    num_step = len(ls_y1[0])
+    x_axis = [i for i in range(num_step)]
 
-    ls_avg_y1 = [calc_pop_avg(populations=ls_y1, n=index) for index in range(len(ls_y1))]
-    ls_avg_y2 = [calc_pop_avg(populations=ls_y2, n=index) for index in range(len(ls_y2))]
+    ls_avg_y1 = [calc_pop_avg(populations=ls_y1, n=index) for index in range(num_step)]
+    ls_avg_y2 = [calc_pop_avg(populations=ls_y2, n=index) for index in range(num_step)]
 
     make_two_curve_plot(x_coords=x_axis,
                         y_coords1=ls_avg_y1,
