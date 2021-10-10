@@ -476,7 +476,7 @@ class ResistantBacteria(SimpleBacteria):
             elif not is_mutate:
                 return ResistantBacteria(birth_prob=self._birth_prob,\
                         death_prob=self._death_prob,\
-                        resistant=self._resistant,\
+                        resistant=False,\
                         mut_prob=self._mut_prob)
         
         else:
@@ -663,7 +663,6 @@ def simulation_with_antibiotic(num_bacteria:int,
             
             #has not antibiotic is set as False default
             elif step <= timestep_no_antibiotic:
-                patient.update()
                 ls_population_trial.append(patient.update())
                 ls_resist_trail.append(patient.get_total_pop())
             
