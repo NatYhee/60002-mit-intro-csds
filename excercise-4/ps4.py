@@ -688,11 +688,19 @@ total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
                                                       mut_prob=0.8,
                                                       num_trials=50)
 
-execute_two_curve_plot(total_pop, resistant_pop)
-# total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
-#                                                       max_pop=1000,
-#                                                       birth_prob=0.17,
-#                                                       death_prob=0.2,
-#                                                       resistant=False,
-#                                                       mut_prob=0.8,
-#                                                       num_trials=50)
+# execute_two_curve_plot(total_pop, resistant_pop)
+print("#### case with resistant 1 #########")
+print(calc_95_ci(total_pop, 299))
+print(calc_95_ci(resistant_pop, 299))
+
+total_pop, resistant_pop = simulation_with_antibiotic(num_bacteria=100,
+                                                      max_pop=1000,
+                                                      birth_prob=0.17,
+                                                      death_prob=0.2,
+                                                      resistant=False,
+                                                      mut_prob=0.8,
+                                                      num_trials=50)
+# execute_two_curve_plot(total_pop, resistant_pop)
+print("#### case with resistant 2 #########")
+print(calc_95_ci(total_pop, 299))
+print(calc_95_ci(resistant_pop, 299))
