@@ -6,6 +6,7 @@
 
 import pylab
 import re
+import numpy as np
 
 # cities in our weather data
 CITIES = [
@@ -163,8 +164,8 @@ def generate_models(x, y, degs):
         a list of pylab arrays, where each array is a 1-d array of coefficients
         that minimizes the squared error of the fitting polynomial
     """
-    # TODO
-    pass
+    ls_coeffs = [pylab.polyfit(x,y,deg) for deg in degs]
+    return ls_coeffs
 
 
 def r_squared(y, estimated):
