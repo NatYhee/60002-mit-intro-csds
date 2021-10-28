@@ -181,8 +181,12 @@ def r_squared(y, estimated):
     Returns:
         a float for the R-squared error term
     """
-    # TODO
-    pass
+    sum_square_residual = pylab.sum((y -estimated)**2)
+    sum_square_total = pylab.sum((y - pylab.mean(y))**2)
+    r_squared = 1 - sum_square_residual/sum_square_total
+
+    return r_squared
+
 
 def evaluate_models_on_training(x, y, models):
     """
