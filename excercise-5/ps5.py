@@ -278,8 +278,16 @@ def moving_average(y, window_length):
         an 1-d pylab array with the same length as y storing moving average of
         y-coordinates of the N sample points
     """
-    # TODO
-    pass
+    # breakpoint()
+    moving_average = np.empty(0)
+    scope_of_index = len(y) - window_length + 1
+
+    for index in range(scope_of_index):
+        sliced_y = np.array(y[index:(index+window_length)])
+        moving_average = np.append(moving_average, sliced_y.mean())
+    
+    return moving_average
+
 
 def rmse(y, estimated):
     """
