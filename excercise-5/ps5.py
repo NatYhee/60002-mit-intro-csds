@@ -8,6 +8,8 @@ import pylab
 import re
 import numpy as np
 
+from matplotlib import pyplot as plt
+
 # cities in our weather data
 CITIES = [
     'BOSTON',
@@ -214,10 +216,24 @@ def evaluate_models_on_training(x, y, models):
     Returns:
         None
     """
-    # TODO
-    pass
+    for model in models:
+        model_function = pylab.poly1d(model)
+        r_2 = r_squared(y, model_function(x))
 
-def gen_cities_avg(climate, multi_cities, years):
+        plt.figure()
+        plt.plot(x, y, 'bo', label='data points')
+        plt.plot(x, model_function(x), 'r-', label='model line')
+        plt.legend(loc='best')
+        if len(model) > 1:
+            plt.title(f'Degree of fit: {len(model) - 1} \n R2: {r_2} \n Ratio of SE: {se_over_slope(x, y, model_function(x), model)}.')
+        else:
+            plt.title(f'Degree of fit: {len(model) - 1} \n R2: {r_2}')
+        plt.xlabel('Year')
+        plt.ylabel('Temperature in Celsius')
+        plt.show()
+        
+
+def gen_cities_avg(climate:object, multi_cities:list, years:list):
     """
     Compute the average annual temperature over multiple cities.
 
@@ -265,8 +281,9 @@ def rmse(y, estimated):
     Returns:
         a float for the root mean square error term
     """
-    # TODO
-    pass
+    mse = pylab.sum((y - estimated)**2)/len(y)
+    rmse = mse**(1/2)
+    return rmse
 
 def gen_std_devs(climate, multi_cities, years):
     """
