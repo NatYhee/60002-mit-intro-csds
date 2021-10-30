@@ -6,6 +6,8 @@
 
 import pylab
 import re
+
+#note: from experiment, numpy can replace pylab without any error
 import numpy as np
 
 from matplotlib import pyplot as plt
@@ -248,8 +250,19 @@ def gen_cities_avg(climate:object, multi_cities:list, years:list):
         this array corresponds to the average annual temperature over the given
         cities for a given year.
     """
-    # TODO
-    pass
+    avg_temperature_years = pylab.array()
+
+    for year in years:
+        temperature_all = pylab.array()
+
+        for city in multi_cities:
+            temperature = climate.get_yearly_temp(city, year)
+            temperature_all = pylab.append(temperature_all, temperature)
+        
+        avg_temperature_years = pylab.append(avg_temperature_years, temperature_all.mean())
+    
+    return avg_temperature_years
+
 
 def moving_average(y, window_length):
     """
