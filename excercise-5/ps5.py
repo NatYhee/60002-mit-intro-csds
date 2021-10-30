@@ -250,15 +250,15 @@ def gen_cities_avg(climate:object, multi_cities:list, years:list):
         this array corresponds to the average annual temperature over the given
         cities for a given year.
     """
-    avg_temperature_years = pylab.array()
+    avg_temperature_years = pylab.empty(0)
 
     for year in years:
-        temperature_all = pylab.array()
+        temperature_all = pylab.empty(0)
 
         for city in multi_cities:
             temperature = climate.get_yearly_temp(city, year)
             temperature_all = pylab.append(temperature_all, temperature)
-        
+
         avg_temperature_years = pylab.append(avg_temperature_years, temperature_all.mean())
     
     return avg_temperature_years
