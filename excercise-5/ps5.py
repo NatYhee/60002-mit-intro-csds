@@ -323,15 +323,19 @@ def gen_std_devs(climate, multi_cities, years):
         this array corresponds to the standard deviation of the average annual 
         city temperatures for the given cities in a given year.
     """
-    std_temperature_years = np.empty(0)
+    std_avg_temperature_years = np.empty(0)
 
     for year in years:
-        temperature_all = get_temperature_multi_cities_specific_year(climate, multi_cities, year)
-        std_temperature_years = np.append(std_temperature_years, temperature_all.std(ddof=0))
-    
-    print(std_temperature_years)
-    
-    return std_temperature_years
+        mean_temperature_cities = np.empty(0)
+
+        for city in multi_cities:
+            breakpoint()
+            temperature_city = climate.get_yearly_temp(city, year)
+            mean_temperature_cities = np.append(mean_temperature_cities, temperature_city.mean())
+
+        std_avg_temperature_years = np.append(std_avg_temperature_years, mean_temperature_cities.std(ddof=1))
+    print(std_avg_temperature_years)
+    return std_avg_temperature_years
 
 def evaluate_models_on_testing(x, y, models):
     """
