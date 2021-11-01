@@ -326,15 +326,18 @@ def gen_std_devs(climate, multi_cities, years):
     std_avg_temperature_years = np.empty(0)
 
     for year in years:
-        mean_temperature_cities = np.empty(0)
+        temperature_cities = np.empty(0)
 
         for city in multi_cities:
             breakpoint()
             temperature_city = climate.get_yearly_temp(city, year)
-            mean_temperature_cities = np.append(mean_temperature_cities, temperature_city.mean())
+            temperature_cities = np.append(temperature_cities, temperature_city, axis=0)
+        
+        temperature_cities_daily_mean = np.mean(temperature_cities, axis=0)
+        temperature_cities_daily_std = temperature_cities_daily_mean.std()
+    
+        std_avg_temperature_years = np.append(std_avg_temperature_years, temperature_cities_daily_std)
 
-        std_avg_temperature_years = np.append(std_avg_temperature_years, mean_temperature_cities.std(ddof=1))
-    print(std_avg_temperature_years)
     return std_avg_temperature_years
 
 def evaluate_models_on_testing(x, y, models):
