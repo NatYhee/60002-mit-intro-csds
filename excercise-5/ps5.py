@@ -358,8 +358,21 @@ def evaluate_models_on_testing(x, y, models):
     Returns:
         None
     """
-    # TODO
-    pass
+    for model in models:
+        model_function = pylab.poly1d(model)
+        rmse = rmse(y, model_function(x))
+
+        plt.figure()
+        plt.plot(x, y, 'bo', label='data points')
+        plt.plot(x, model_function(x), 'r-', label='model line')
+        plt.legend(loc='best')
+        if len(model) > 1:
+            plt.title(f'Degree of fit: {len(model) - 1} \n RMSE: {rmse}')
+        else:
+            plt.title(f'Degree of fit: {len(model) - 1} \n RMSE: {rmse}')
+        plt.xlabel('Year')
+        plt.ylabel('Temperature in Celsius')
+        plt.show()
 
 if __name__ == '__main__':
 
