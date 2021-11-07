@@ -360,16 +360,16 @@ def evaluate_models_on_testing(x, y, models):
     """
     for model in models:
         model_function = pylab.poly1d(model)
-        rmse = rmse(y, model_function(x))
+        rmse_result = rmse(y, model_function(x))
 
         plt.figure()
         plt.plot(x, y, 'bo', label='data points')
         plt.plot(x, model_function(x), 'r-', label='model line')
         plt.legend(loc='best')
         if len(model) > 1:
-            plt.title(f'Degree of fit: {len(model) - 1} \n RMSE: {rmse}')
+            plt.title(f'Degree of fit: {len(model) - 1} \n RMSE: {rmse_result}')
         else:
-            plt.title(f'Degree of fit: {len(model) - 1} \n RMSE: {rmse}')
+            plt.title(f'Degree of fit: {len(model) - 1} \n RMSE: {rmse_result}')
         plt.xlabel('Year')
         plt.ylabel('Temperature in Celsius')
         plt.show()
@@ -420,6 +420,46 @@ def answering_part_c():
     evaluate_models_on_training(x_axis_array, y_axis_array, models)
 
 
+def answering_part_d_pb1():
+    climate = Climate('data.csv')
+    ls_cities = list(climate.rawdata.keys())
+    
+    avg_temperature_data_cities = gen_cities_avg(climate, ls_cities, range(1961, 2010))
+    ma_avg_temperature_cities = moving_average(avg_temperature_data_cities, 5)
+
+    x_axis_array = np.array(range(1961, 2010))
+    y_axis_array = np.array(ma_avg_temperature_cities)
+
+    models = generate_models(x_axis_array, y_axis_array, [1, 2, 20])
+    evaluate_models_on_training(x_axis_array, y_axis_array, models)
+
+
+def answering_part_d_pb2():
+    climate = Climate('data.csv')
+    ls_cities = list(climate.rawdata.keys())
+    
+    """
+    training dataset
+    """
+    avg_train_temperature_data_cities = gen_cities_avg(climate, ls_cities, range(1961, 2010))
+    ma_train_avg_temperature_cities = moving_average(avg_train_temperature_data_cities, 5)
+
+    x_train_array = np.array(range(1961, 2010))
+    y_train_array = np.array(ma_train_avg_temperature_cities)
+
+    models = generate_models(x_train_array, y_train_array, [1, 2, 20])
+
+    """
+    Test dataset
+    """
+    avg_test_temperature_data_cities = gen_cities_avg(climate, ls_cities, range(2010, 2016))
+    ma_test_avg_temperature_cities = moving_average(avg_test_temperature_data_cities, 5)
+
+    x_test_array = np.array(range(2010, 2016))
+    y_test_array = np.array(ma_test_avg_temperature_cities)
+
+    evaluate_models_on_testing(x_test_array, y_test_array, models)
+
 
 if __name__ == '__main__':
 
@@ -453,10 +493,15 @@ if __name__ == '__main__':
 
     The model from miving average is also confirm trend in incremental tempreature with higher r square and se over slope
     """
-    answering_part_c()
+    # answering_part_c()
 
     # Part D.2
-    # TODO: replace this line with your code
+    """
+    The higher polynomial degree give higher r-squre.
+    However, the higher polynomial degree lead to higher rmse from high variance of model
+    """
+    # answering_part_d_pb1()
+    # answering_part_d_pb2()
 
     # Part E
-    # TODO: replace this line with your code
+
