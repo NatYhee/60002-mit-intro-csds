@@ -330,7 +330,6 @@ def gen_std_devs(climate, multi_cities, years):
         temperature_cities  = np.array([climate.get_yearly_temp(city, year) for city in multi_cities])
         temperature_cities_daily_mean = np.mean(temperature_cities, axis=0)
         temperature_cities_daily_std = temperature_cities_daily_mean.std()
-        
         std_avg_temperature_years = np.append(std_avg_temperature_years, temperature_cities_daily_std)
 
     return std_avg_temperature_years
