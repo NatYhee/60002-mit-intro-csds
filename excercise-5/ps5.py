@@ -152,7 +152,7 @@ def se_over_slope(x, y, estimated, model):
 End helper code
 """
 
-def generate_models(x, y, degs):
+def generate_models(x, y, degs=[1]):
     """
     Generate regression models by fitting a polynomial for each degree in degs
     to points (x, y).
@@ -374,15 +374,66 @@ def evaluate_models_on_testing(x, y, models):
         plt.ylabel('Temperature in Celsius')
         plt.show()
 
+def answering_part_a4_part1():
+    climate = Climate('data.csv')
+    temperature_data = [climate.get_daily_temp("NEW YORK", 1, 10, year) for year in range(1961, 2010)]
+
+    x_axis_array = np.array(range(1961, 2010))
+    y_axis_array = np.array(temperature_data)
+
+    models = generate_models(x_axis_array, y_axis_array)
+    evaluate_models_on_training(x_axis_array, y_axis_array, models)
+
+
+def answering_part_a4_part2():
+    climate = Climate('data.csv')
+    avg_temperature_data = gen_cities_avg(climate, ["NEW YORK"], range(1961, 2010))
+
+    x_axis_array = np.array(range(1961, 2010))
+    y_axis_array = np.array(avg_temperature_data)
+
+    models = generate_models(x_axis_array, y_axis_array)
+    evaluate_models_on_training(x_axis_array, y_axis_array, models)
+
+def answering_part_b():
+    climate = Climate('data.csv')
+    ls_cities = list(climate.rawdata.keys())
+    avg_temperature_data_cities = gen_cities_avg(climate, ls_cities, range(1961, 2010))
+
+    x_axis_array = np.array(range(1961, 2010))
+    y_axis_array = np.array(avg_temperature_data_cities)
+
+    models = generate_models(x_axis_array, y_axis_array)
+    evaluate_models_on_training(x_axis_array, y_axis_array, models)
+
+
+
+
 if __name__ == '__main__':
 
-    pass 
+    # pass 
 
     # Part A.4
-    # TODO: replace this line with your code
+    """
+    The model with degree of one tell us that there is an incremental trend of temperature on annually basis
+    The trend of the avg temperature of New York also confirm the incremetal trend of temperature
+
+    The average data tend to be less noisy than the only data point of the year
+    The average data also prone to confirm that temperature has trend more than the data point model judeged from SE OVER SLOPE
+    """
+    # answering_part_a4_part1()
+    # answering_part_a4_part2()
 
     # Part B
-    # TODO: replace this line with your code
+    """
+    Considering all city in USA confirm an incrementatl trend of temperature with hige value of R^2 and low value for SE OVER SLOPE
+    
+    Using 3 cities may get different resulr from 100 cities depending on used cities which may get different effect from global warming
+
+    Using cities in the same region may lead to bias in conclusion as the same region may get the result represents for that only region
+    
+    """
+    # answering_part_b()
 
     # Part C
     # TODO: replace this line with your code
