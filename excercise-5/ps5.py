@@ -406,6 +406,18 @@ def answering_part_b():
     models = generate_models(x_axis_array, y_axis_array)
     evaluate_models_on_training(x_axis_array, y_axis_array, models)
 
+def answering_part_c():
+    climate = Climate('data.csv')
+    ls_cities = list(climate.rawdata.keys())
+    
+    avg_temperature_data_cities = gen_cities_avg(climate, ls_cities, range(1961, 2010))
+    ma_avg_temperature_cities = moving_average(avg_temperature_data_cities, 5)
+
+    x_axis_array = np.array(range(1961, 2010))
+    y_axis_array = np.array(ma_avg_temperature_cities)
+
+    models = generate_models(x_axis_array, y_axis_array)
+    evaluate_models_on_training(x_axis_array, y_axis_array, models)
 
 
 
@@ -436,7 +448,12 @@ if __name__ == '__main__':
     # answering_part_b()
 
     # Part C
-    # TODO: replace this line with your code
+    """
+    As moving average help to reduce noise.
+
+    The model from miving average is also confirm trend in incremental tempreature with higher r square and se over slope
+    """
+    answering_part_c()
 
     # Part D.2
     # TODO: replace this line with your code
