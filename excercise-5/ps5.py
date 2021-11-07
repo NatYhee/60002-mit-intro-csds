@@ -461,6 +461,20 @@ def answering_part_d_pb2():
     evaluate_models_on_testing(x_test_array, y_test_array, models)
 
 
+def answering_part_e():
+    climate = Climate('data.csv')
+    ls_cities = list(climate.rawdata.keys())
+    
+    std_temperature_data_cities = gen_std_devs(climate, ls_cities, range(1961, 2010))
+    ma_std_temperature_data_cities = moving_average(std_temperature_data_cities, 5)
+
+    x_axis_array = np.array(range(1961, 2010))
+    y_axis_array = np.array(ma_std_temperature_data_cities)
+
+    models = generate_models(x_axis_array, y_axis_array)
+    evaluate_models_on_training(x_axis_array, y_axis_array, models)
+
+
 if __name__ == '__main__':
 
     # pass 
@@ -504,4 +518,10 @@ if __name__ == '__main__':
     # answering_part_d_pb2()
 
     # Part E
+    """
+    Trend of standard deviation is deremental across period of time which confirm that in the later years, 
+    the result of the linear regression model can be conclusive and confirm the existance of "Glogal Warming"
+    """
+    answering_part_e()
+
 
